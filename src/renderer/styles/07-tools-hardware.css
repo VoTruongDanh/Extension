@@ -478,3 +478,292 @@
   background: rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.4);
 }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Kill Port Styles
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Toolbar ── */
+.view-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 9px 12px 9px 38px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13.5px;
+  font: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--blue) 62%, var(--border));
+  box-shadow: 0 0 0 3px var(--blue-subtle);
+}
+
+.search-box input::placeholder { color: var(--text-3); }
+
+.toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar-info {
+  font-size: 12.5px;
+  color: var(--text-2);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* filter select — reuse shutdown-select look */
+.filter-select {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.filter-select:hover  { border-color: color-mix(in srgb, var(--blue) 40%, var(--border)); }
+.filter-select:focus  { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-subtle); }
+
+/* ── Grid ── */
+.killport-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+/* ── Card ── */
+.killport-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .15s var(--ease), transform .15s var(--ease);
+}
+
+.killport-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,.1);
+  transform: translateY(-1px);
+}
+
+/* risk left-border — dùng đúng token màu hệ thống */
+.killport-card.risk-safe     { border-left: 3px solid var(--green); }
+.killport-card.risk-warning  { border-left: 3px solid var(--amber); }
+.killport-card.risk-danger   { border-left: 3px solid var(--red); }
+.killport-card.risk-protected { border-left: 3px solid var(--border); opacity: .75; }
+
+/* ── Card header ── */
+.killport-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.killport-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── Port number + type label ── */
+.killport-port-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.killport-port-badge .port-number {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
+  color: var(--text);
+  line-height: 1;
+}
+
+.killport-port-badge .port-type {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+/* port-type label colors — dùng semantic subtle tokens */
+.killport-port-badge.dev      .port-type { background: var(--blue-subtle);  color: var(--blue); }
+.killport-port-badge.web      .port-type { background: var(--green-subtle); color: var(--green); }
+.killport-port-badge.database .port-type { background: var(--amber-subtle); color: var(--amber); }
+.killport-port-badge.system   .port-type { background: var(--red-subtle);   color: var(--red); }
+.killport-port-badge.browser  .port-type { background: var(--blue-subtle);  color: var(--blue); }
+.killport-port-badge.custom   .port-type { background: var(--surface-2);    color: var(--text-2); border: 1px solid var(--border); }
+
+/* protocol badges — dùng badge pattern hệ thống */
+.badge.badge-tcp       { background: var(--blue-subtle);  color: var(--blue); }
+.badge.badge-udp       { background: var(--green-subtle); color: var(--green); }
+.badge.badge-protected { background: var(--surface-2);    color: var(--text-2); }
+.badge.badge-safe      { background: var(--green-subtle); color: var(--green); font-weight: 700; }
+
+/* ── Card body ── */
+.killport-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.killport-process {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+.killport-process svg { color: var(--blue); flex-shrink: 0; }
+
+.killport-process .process-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.killport-meta { display: flex; flex-direction: column; gap: 6px; }
+
+.killport-meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.killport-meta-item .label { color: var(--text-3); font-weight: 500; }
+
+.killport-meta-item .value {
+  color: var(--text);
+  font-weight: 600;
+  font-family: 'Consolas', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 65%;
+  text-align: right;
+}
+
+/* ── Card footer/actions ── */
+.killport-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+/* ── Modal info panel ── */
+.killport-modal-info {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin: 18px 0;
+}
+
+.killport-modal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.killport-modal-item:last-child { border-bottom: none; }
+
+.killport-modal-item .label {
+  color: var(--text-2);
+  font-weight: 600;
+  min-width: 130px;
+}
+
+.killport-modal-item .value {
+  color: var(--text);
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
+  text-align: right;
+}
+
+/* risk colors in modal — dùng đúng token */
+.killport-modal-item .value.risk-safe    { color: var(--green); }
+.killport-modal-item .value.risk-warning { color: var(--amber); }
+.killport-modal-item .value.risk-danger  { color: var(--red); }
+
+/* alert spacing inside modal */
+#killport-modal .alert { margin: 0 0 18px; }
+
+/* alert-danger — reuse existing alert token pattern */
+.alert-danger {
+  background: var(--red-subtle);
+  border: 1px solid color-mix(in srgb, var(--red) 35%, transparent);
+  color: var(--text);
+}
+
+.alert-danger svg { color: var(--red); }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .killport-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .killport-grid        { grid-template-columns: 1fr; }
+  .toolbar-controls     { flex-direction: column; align-items: stretch; }
+  .filter-select        { width: 100%; }
+}

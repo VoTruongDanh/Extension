@@ -12,6 +12,26 @@ npm run build
 - `npm start`: chạy app local bằng Electron
 - `npm run build`: build installer Windows bằng `electron-builder`
 
+## Tính năng chính
+
+### Kill Port 🆕
+- Hiển thị tất cả các port đang listening trên hệ thống
+- Xem thông tin chi tiết: Process name, PID, Protocol, Address
+- Kill port/process với một click
+- Tự động phát hiện loại port (Development, Web Server, Database, System...)
+- Tìm kiếm port theo số port, process name, hoặc PID
+- Auto-refresh mỗi 5 giây
+- **Lưu ý**: Cần quyền Administrator để kill process
+
+### Các tính năng khác
+- Quản lý services (9Router, OpenClaw)
+- Quản lý mạng (Network adapters, IP, DNS)
+- Thông tin phần cứng (CPU, RAM, Disk, GPU)
+- Hẹn giờ tắt máy/restart
+- Reset IDM trial, AnyDesk ID
+- Thư viện Prompts và Links
+- Scheduler/Nhắc nhở
+
 ## Cấu trúc hiện tại
 
 ```text
@@ -26,6 +46,13 @@ npm run build
 │  │  ├─ settings.js              # load/save settings.json
 │  │  ├─ tray.js                  # system tray
 │  │  └─ tools/                   # tool phía main process
+│  │     ├─ shutdown.js
+│  │     ├─ network.js
+│  │     ├─ hardware.js
+│  │     ├─ kill-port.js          # 🆕 Kill port tool
+│  │     ├─ idm-reset.js
+│  │     ├─ anydesk-reset.js
+│  │     └─ copy-paste-sync.js
 │  └─ renderer/
 │     ├─ index.js                 # renderer orchestration
 │     ├─ state.js                 # runtime state
@@ -40,6 +67,8 @@ npm run build
 │     │  ├─ command-palette.html
 │     │  ├─ modals/
 │     │  └─ views/                # mỗi view lớn là một partial HTML
+│     │     ├─ killport.html      # 🆕 Kill Port view
+│     │     └─ ...
 │     ├─ styles/
 │     │  ├─ 01-tokens-reset.css
 │     │  ├─ 02-shell-layout.css
@@ -47,8 +76,11 @@ npm run build
 │     │  ├─ 04-settings-panels.css
 │     │  ├─ 05-shutdown-reset.css
 │     │  ├─ 06-library-workspaces.css
-│     │  └─ 07-tools-hardware.css
+│     │  └─ 07-tools-hardware.css  # (bao gồm Kill Port styles)
 │     └─ views/                   # logic JS cho từng view/tool
+│        └─ tools/
+│           ├─ killport.js        # 🆕 Kill Port logic
+│           └─ ...
 └─ README.md
 ```
 
@@ -60,12 +92,44 @@ npm run build
 - Nội dung thật nằm trong `src/renderer/partials/**`.
 - `src/renderer/bootstrap/htmlPartials.js` thay các node `data-include="..."` bằng nội dung partial tương ứng trước khi `src/renderer/index.js` chạy.
 
+**CRITICAL: View Structure Pattern**
+
+Tất cả views PHẢI tuân theo cấu trúc này:
+
+```html
+<div id="view-{name}" class="view" style="display: none;">
+  <header class="header">
+    <div>
+      <h1>View Title</h1>
+      <p class="subtitle">View description</p>
+    </div>
+    <div class="header-right">
+      <!-- Action buttons -->
+    </div>
+  </header>
+  
+  <!-- View content here -->
+</div>
+```
+
+**Standard Classes:**
+- `.header` - View header container (NOT `.view-header`)
+- `.subtitle` - Description text (NOT `.view-description`)
+- `.header-right` - Action buttons container (NOT `.view-header-actions`)
+- `#view-{name}` - ID MUST match view name in navigation
+
+**Common Mistakes:**
+- ❌ Missing `<div id="view-{name}">` wrapper → CSS won't apply
+- ❌ Using custom header classes → Styles won't work
+- ❌ Missing `style="display: none;"` → View shows on load
+
 Khi thêm view mới:
 
-1. Tạo partial HTML trong `src/renderer/partials/views/`.
+1. Tạo partial HTML trong `src/renderer/partials/views/` với ĐÚNG structure pattern.
 2. Thêm một dòng `data-include` vào `index.html`.
 3. Tạo file logic trong `src/renderer/views/` hoặc `src/renderer/views/tools/`.
-4. Đăng ký view trong `src/renderer/index.js`.
+4. Đăng ký view trong `src/renderer/index.js` với ID matching pattern.
+5. Verify CSS applies bằng cách check có `.header` styling.
 
 ### 2. CSS manifest + chunk
 

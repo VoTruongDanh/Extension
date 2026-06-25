@@ -6,6 +6,7 @@ const anydeskTools  = require('./tools/anydesk-reset');
 const networkTools  = require('./tools/network');
 const hardwareTools = require('./tools/hardware');
 const copyPasteSync = require('./tools/copy-paste-sync');
+const killPortTools = require('./tools/kill-port');
 const syncToken = require('./syncToken');
 
 const SERVICE_CONFIGS = {
@@ -1003,6 +1004,23 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
       uploadedAt: settings.copypaste_uploaded_at || null,
       downloadedAt: settings.copypaste_downloaded_at || null
     };
+  });
+
+  // Kill Port handlers
+  ipcMain.handle('killport-get-ports', async () => {
+    return await killPortTools.getOpenPorts();
+  });
+
+  ipcMain.handle('killport-kill-process', async (event, pid) => {
+    return await killPortTools.killProcess(pid);
+  });
+
+  ipcMain.handle('killport-kill-port', async (event, port) => {
+    return await killPortTools.killPort(port);
+  });
+
+  ipcMain.handle('killport-find-port', async (event, port) => {
+    return await killPortTools.findPortProcess(port);
   });
 
   return { broadcastStatus };

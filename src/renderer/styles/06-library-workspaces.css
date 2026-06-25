@@ -537,8 +537,8 @@
   width: min(560px, 100%);
   padding: 24px;
   border-radius: var(--r-lg);
-  border: 1px solid rgba(148, 163, 184, .28);
-  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.95));
+  border: 1px solid var(--border);
+  background: var(--surface);
   box-shadow: 0 24px 80px rgba(15, 23, 42, .24);
 }
 
@@ -559,8 +559,8 @@
   margin: 0;
   padding: 12px 14px;
   border-radius: var(--r);
-  border: 1px solid rgba(37, 99, 235, .14);
-  background: rgba(37, 99, 235, .06);
+  border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
+  background: var(--blue-subtle);
   color: var(--text-2);
   line-height: 1.6;
 }

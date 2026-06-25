@@ -7,6 +7,7 @@ const settingsView = require('./views/settings');
 const shutdownView = require('./views/tools/shutdown');
 const networkView = require('./views/tools/network');
 const hardwareView = require('./views/tools/hardware');
+const killportView = require('./views/tools/killport');
 const idmResetView = require('./views/tools/idm-reset');
 const anydeskView = require('./views/tools/anydesk-reset');
 const promptsView = require('./views/tools/prompts');
@@ -29,6 +30,7 @@ const views = {
   scheduler: ui.$('view-scheduler'),
   network: ui.$('view-network'),
   hardware: ui.$('view-hardware'),
+  killport: ui.$('view-killport'),
   idmReset: ui.$('view-idm-reset'),
   prompts: ui.$('view-prompts'),
   links: ui.$('view-links'),
@@ -38,6 +40,7 @@ const viewLoaders = {
   settings: () => settingsView.load(),
   network: () => networkView.load(),
   hardware: () => hardwareView.load(),
+  killport: () => killportView.load(),
   prompts: () => promptsView.load(),
   links: () => linksView.load(),
   scheduler: () => schedulerView.render(),
@@ -51,6 +54,7 @@ const modules = [
   schedulerView,
   networkView,
   hardwareView,
+  killportView,
   idmResetView,
   anydeskView,
   promptsView,
@@ -69,6 +73,7 @@ const navMap = {
   'nav-scheduler': 'scheduler',
   'nav-network': 'network',
   'nav-hardware': 'hardware',
+  'nav-killport': 'killport',
   'nav-idm-reset': 'idmReset',
   'nav-prompts': 'prompts',
   'nav-links': 'links',

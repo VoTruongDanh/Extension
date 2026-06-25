@@ -109,6 +109,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   margin-bottom: 32px;
+  align-items: start;
 }
 
 .clock-container {

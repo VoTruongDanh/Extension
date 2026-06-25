@@ -1,0 +1,92 @@
+<div id="view-killport" class="view" style="display: none;">
+<header class="header">
+  <div>
+    <h1>Kill Port</h1>
+    <p class="subtitle">Quản lý và đóng các port đang được sử dụng</p>
+  </div>
+  <div class="header-right">
+    <button id="killport-refresh-btn" class="btn btn-secondary" title="Làm mới danh sách">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+      </svg>
+      Làm mới
+    </button>
+  </div>
+</header>
+
+<div class="view-toolbar">
+  <div class="search-box">
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+    </svg>
+    <input 
+      type="text" 
+      id="killport-search" 
+      placeholder="Tìm theo port, process, hoặc PID..." 
+      autocomplete="off"
+    />
+  </div>
+  <div class="toolbar-controls">
+    <select id="killport-filter" class="filter-select">
+      <option value="all">Tất cả ports</option>
+      <option value="safe">Chỉ Dev ports</option>
+      <option value="nosystem">Ẩn System ports</option>
+    </select>
+    <div class="toolbar-info">
+      <span id="killport-count">Đang tải...</span>
+    </div>
+  </div>
+</div>
+
+<div id="killport-list" class="killport-grid">
+  <!-- Port cards will be rendered here -->
+</div>
+
+<!-- Kill Port Modal -->
+<div class="library-modal-overlay" id="killport-modal" role="dialog" aria-modal="true" style="display: none;">
+  <div class="library-modal">
+    <div class="library-modal-head">
+      <div>
+        <h2>Xác nhận Kill Port</h2>
+        <p>Kiểm tra thông tin trước khi terminate process</p>
+      </div>
+      <button class="btn-icon btn-secondary" type="button" id="killport-modal-close" aria-label="Đóng">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="killport-modal-info">
+      <div class="killport-modal-item">
+        <span class="label">Port:</span>
+        <span class="value" id="killport-modal-port"></span>
+      </div>
+      <div class="killport-modal-item">
+        <span class="label">Process:</span>
+        <span class="value" id="killport-modal-process"></span>
+      </div>
+      <div class="killport-modal-item">
+        <span class="label">PID:</span>
+        <span class="value" id="killport-modal-pid"></span>
+      </div>
+      <div class="killport-modal-item">
+        <span class="label">Mức độ rủi ro:</span>
+        <span class="value" id="killport-modal-risk"></span>
+      </div>
+    </div>
+
+    <div class="alert alert-warning" id="killport-modal-warning">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      Hành động này sẽ terminate process và không thể hoàn tác.
+    </div>
+
+    <div class="library-form-actions library-modal-actions">
+      <button class="btn btn-secondary" type="button" id="killport-modal-cancel">Hủy</button>
+      <button class="btn btn-danger" type="button" id="killport-modal-confirm">Kill Port</button>
+    </div>
+  </div>
+</div>
+</div>
