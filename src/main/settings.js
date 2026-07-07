@@ -15,7 +15,10 @@ const DEFAULTS = {
   sync_token:        '',
   sync_meta:         null,
   prompts:           [],
-  links:             []
+  links:             [],
+  copypaste_code:        '',
+  copypaste_uploaded_at:   null,
+  copypaste_downloaded_at: null
 };
 
 function load() {

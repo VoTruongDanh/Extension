@@ -1,0 +1,280 @@
+/* ─── Claude Code View Styles ────────────────────────────────────────────────── */
+.claude-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+
+.claude-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.claude-card-icon-wrapper {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #cc7b5c; /* Coral color matching Anthropic/Claude */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.claude-header-info h3 {
+  font-size: 14.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.claude-header-info p {
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+
+.claude-collapse-btn {
+  margin-left: auto;
+}
+
+.claude-card-body {
+  padding: 0 0 20px 0;
+  max-height: 1000px;
+  transition: max-height 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+
+.claude-card-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.claude-form-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+
+.claude-form-row:last-of-type {
+  border-bottom: none;
+}
+
+.claude-row-label {
+  flex: 0 0 160px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.row-arrow {
+  color: var(--text-3);
+  opacity: 0.7;
+}
+
+.claude-row-control {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.claude-row-value {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.text-mono {
+  font-family: 'Consolas', monospace;
+  background: var(--surface-2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.claude-input-text {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.claude-input-text:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-subtle);
+  background: var(--surface);
+}
+
+/* Select Group */
+.select-group {
+  gap: 8px;
+}
+
+.select-group .claude-input-text {
+  flex: 1;
+  font-family: 'Consolas', monospace;
+}
+
+.claude-clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.claude-clear-btn:hover {
+  color: var(--red);
+  background: var(--red-subtle);
+}
+
+.claude-select-preset-wrapper {
+  position: relative;
+}
+
+.claude-preset-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 100;
+  min-width: 260px;
+  overflow: hidden;
+  animation: fadeUp 0.15s var(--ease);
+}
+
+.claude-preset-search-row {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+
+.claude-preset-search {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.claude-preset-search:focus {
+  border-color: var(--primary, #6366f1);
+}
+
+.claude-preset-refresh {
+  flex: 0 0 auto;
+  width: 30px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+
+.claude-preset-refresh:hover {
+  background: var(--primary, #6366f1);
+  color: #fff;
+}
+
+.claude-preset-list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.claude-preset-status {
+  padding: 10px 12px;
+  font-size: 11.5px;
+  color: var(--text-2);
+  font-style: italic;
+}
+
+.claude-preset-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: 'Consolas', monospace;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.claude-preset-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.claude-preset-item.selected {
+  background: color-mix(in srgb, var(--primary, #6366f1) 15%, transparent);
+  color: var(--text);
+}
+
+.claude-preset-name {
+  font-family: var(--font, sans-serif);
+  font-weight: 600;
+}
+
+.claude-preset-id {
+  font-size: 11px;
+  color: var(--text-3, var(--text-2));
+  opacity: 0.8;
+}
+
+.claude-card-actions {
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.claude-collapse-btn svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.claude-collapse-btn.collapsed svg {
+  transform: rotate(-180deg);
+}
+
+.font-mono-row {
+  background: var(--surface-2);
+}

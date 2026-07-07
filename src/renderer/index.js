@@ -14,6 +14,7 @@ const promptsView = require('./views/tools/prompts');
 const linksView = require('./views/tools/links');
 const routerView = require('./views/router');
 const openclawView = require('./views/openclaw');
+const claudecodeView = require('./views/tools/claudecode');
 const schedulerView = require('./views/scheduler');
 const logPanel = require('./components/logPanel');
 const commandPalette = require('./components/commandPalette');
@@ -24,6 +25,7 @@ const views = {
   dashboard: ui.$('view-dashboard'),
   router: ui.$('view-router'),
   openclaw: ui.$('view-openclaw'),
+  claudecode: ui.$('view-claudecode'),
   logs: ui.$('view-logs'),
   settings: ui.$('view-settings'),
   shutdown: ui.$('view-shutdown'),
@@ -44,6 +46,7 @@ const viewLoaders = {
   prompts: () => promptsView.load(),
   links: () => linksView.load(),
   scheduler: () => schedulerView.render(),
+  claudecode: () => claudecodeView.load(),
 };
 
 const modules = [
@@ -61,12 +64,14 @@ const modules = [
   linksView,
   routerView,
   openclawView,
+  claudecodeView,
 ];
 
 const navMap = {
   'nav-dashboard': 'dashboard',
   'nav-router': 'router',
   'nav-openclaw': 'openclaw',
+  'nav-claudecode': 'claudecode',
   'nav-logs': 'logs',
   'nav-settings': 'settings',
   'nav-shutdown': 'shutdown',

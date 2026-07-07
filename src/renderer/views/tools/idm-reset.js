@@ -1,5 +1,4 @@
 const { ipcRenderer } = require('electron');
-const path = require('path');
 const ui = require('../../ui');
 
 // ─── Scheduler state ──────────────────────────────────────────────────────────
@@ -85,12 +84,6 @@ function init() {
 
   if (!resetBtn || !statusEl || !checkBtn || !progressEl || !stepsEl) return;
 
-  // Set logo thật — dùng file:// protocol của Electron
-  const logoImg = ui.$('idm-logo-img');
-  if (logoImg) {
-    logoImg.src = 'file://' + path.join(__dirname, '../../assets/idm-logo.jpg').replace(/\\/g, '/');
-  }
-
   let isCheckingIDM = false;
   let isResetting = false;
 
@@ -175,15 +168,19 @@ function init() {
 
     try {
       const result = await ipcRenderer.invoke('idm-check-running');
+      const hasDays = result.daysLeft !== null && result.daysLeft !== undefined;
+      const trialInfo = hasDays
+        ? ` · Còn ${result.daysLeft} ngày`
+        : (result.hasRegistry ? ' · Trial hoạt động' : '');
+
       if (result.running) {
-        let text = 'IDM đang chạy';
-        if (result.daysLeft !== null && result.daysLeft !== undefined) text += ` · Còn ${result.daysLeft} ngày`;
-        else if (result.hasRegistry) text += ' · Trial hoạt động';
+        const text = `IDM đang chạy${trialInfo}`;
         setStatus('running', text);
         ui.showToast(text, 'info');
       } else {
-        setStatus('stopped', 'IDM không chạy');
-        ui.showToast('IDM không chạy', 'info');
+        const text = `IDM không chạy${trialInfo}`;
+        setStatus('stopped', text);
+        ui.showToast(text, 'info');
       }
     } catch (err) {
       setStatus('error', `Lỗi: ${err.message}`);
@@ -249,6 +246,9 @@ function init() {
 
         setStatus('success', 'Reset xong · Mở lại IDM');
         ui.showToast('Reset IDM trial thành công. Mở lại IDM để áp dụng.', 'success');
+        if (result.backupFile) {
+          ui.showToast('Đã backup registry để khôi phục nếu cần.', 'info');
+        }
 
         // Cập nhật lastReset
         const s = loadSchedule();

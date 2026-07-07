@@ -35,10 +35,11 @@ function init() {
     });
   }
   
-  load();
-  
-  // Auto-refresh every 10 seconds
-  refreshInterval = setInterval(load, 10000);
+  // Auto-refresh every 10 seconds, chỉ chạy khi view network đang hiển thị
+  refreshInterval = setInterval(() => {
+    const view = ui.$('view-network');
+    if (view && view.style.display !== 'none') load();
+  }, 10000);
 }
 
 async function load() {

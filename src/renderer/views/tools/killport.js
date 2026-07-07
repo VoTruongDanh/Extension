@@ -85,10 +85,11 @@ function init() {
     });
   }
   
-  load();
-  
-  // Auto-refresh every 5 seconds
-  refreshInterval = setInterval(load, 5000);
+  // Auto-refresh every 5 seconds, chỉ chạy khi view killport đang hiển thị
+  refreshInterval = setInterval(() => {
+    const view = ui.$('view-killport');
+    if (view && view.style.display !== 'none') load();
+  }, 5000);
 }
 
 function handleFilterChange() {

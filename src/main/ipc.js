@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const { dialog } = require('electron');
 const zlib = require('zlib');
 const shutdownTools = require('./tools/shutdown');
 const idmTools      = require('./tools/idm-reset');
@@ -8,6 +9,7 @@ const hardwareTools = require('./tools/hardware');
 const copyPasteSync = require('./tools/copy-paste-sync');
 const killPortTools = require('./tools/kill-port');
 const syncToken = require('./syncToken');
+const claudeTools   = require('./tools/claudecode');
 
 const SERVICE_CONFIGS = {
   router: {
@@ -1021,6 +1023,33 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
 
   ipcMain.handle('killport-find-port', async (event, port) => {
     return await killPortTools.findPortProcess(port);
+  });
+
+  // Claude Code handlers
+  ipcMain.handle('claude-get-settings', async () => {
+    const config = claudeTools.loadSettings();
+    return {
+      config,
+      path: claudeTools.CLAUDE_SETTINGS_PATH
+    };
+  });
+
+  ipcMain.handle('claude-save-settings', async (_, config) => {
+    return claudeTools.saveSettings(config);
+  });
+
+  ipcMain.handle('claude-check-key', async (_, { baseUrl, apiKey, model }) => {
+    return await claudeTools.verifyApiKey(baseUrl, apiKey, model);
+  });
+
+  ipcMain.handle('claude-list-models', async (_, { baseUrl, apiKey }) => {
+    return await claudeTools.listModels(baseUrl, apiKey);
+  });
+
+  ipcMain.handle('claude-open-file', async () => {
+    const folderPath = require('path').dirname(claudeTools.CLAUDE_SETTINGS_PATH);
+    exec(`explorer "${folderPath}"`, () => {});
+    return { ok: true };
   });
 
   return { broadcastStatus };

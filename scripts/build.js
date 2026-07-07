@@ -11,14 +11,15 @@ async function cleanDist() {
   }
 }
 
-async function buildTarget(target) {
-  console.log(`🔨 Đang build target: ${target} ...`);
+async function buildApp() {
+  console.log('🔨 Đang build NSIS + Portable...');
   const result = await build({
-    targets: require('electron-builder').Platform.WINDOWS.createTarget(target, 'x64'),
     config: {
-      appId: 'com.clawrouter.manager',
-      productName: 'Claw Router Manager',
-      directories: { output: 'dist' },
+      appId: 'com.extension.app',
+      productName: 'Extention',
+      directories: { 
+        output: 'dist'
+      },
       files: [
         'src/main/**/*',
         'src/renderer/**/*',
@@ -31,21 +32,26 @@ async function buildTarget(target) {
       ],
       win: {
         icon: 'icon.ico',
-        requestedExecutionLevel: 'requireAdministrator'
+        requestedExecutionLevel: 'requireAdministrator',
+        target: [
+          { target: 'nsis', arch: 'x64' },
+          { target: 'portable', arch: 'x64' }
+        ]
       },
       nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
         createDesktopShortcut: true,
         createStartMenuShortcut: true,
-        shortcutName: 'Claw Router Manager'
+        shortcutName: 'Extention'
       },
       portable: {
         artifactName: '${productName}-Portable-${version}.${ext}'
       }
-    }
+    },
+    publish: null
   });
-  console.log(`✅ Build ${target} hoàn tất.`);
+  console.log('✅ Build hoàn tất.');
   return result;
 }
 
@@ -65,10 +71,7 @@ async function listOutputs() {
 (async () => {
   try {
     await cleanDist();
-
-    await buildTarget('nsis');
-    await buildTarget('portable');
-
+    await buildApp();
     await listOutputs();
     console.log('\n🎉 Đóng gói hoàn tất! Kiểm tra thư mục dist/');
   } catch (err) {

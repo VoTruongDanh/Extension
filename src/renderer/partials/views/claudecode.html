@@ -1,0 +1,191 @@
+      <!-- AI Agents configuration view -->
+      <div id="view-claudecode" style="display:none">
+        <header class="header">
+          <div>
+            <h1>AI Agents</h1>
+            <p class="subtitle">Quản lý cấu hình các trợ lý AI lập trình của bạn</p>
+          </div>
+        </header>
+
+        <!-- Claude Code Card -->
+        <div class="claude-card">
+          <!-- Card Header styled like the screenshot, starts collapsed -->
+          <div class="claude-card-header">
+            <div class="claude-card-icon-wrapper">
+              <!-- Anthropic snowflake logo -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.0006 18.2838L15.352 21.6353C15.8208 22.1041 16.5815 22.1041 17.0504 21.6353C17.5192 21.1664 17.5192 20.4057 17.0504 19.9369L13.699 16.5854L18.2838 12.0006L21.6353 15.352C22.1041 15.8208 22.1041 16.5815 21.6353 17.0504C21.1664 17.5192 20.4057 17.5192 19.9369 17.0504L16.5854 13.699L12.0006 18.2838ZM12.0006 5.71624L15.352 2.3648C15.8208 1.89596 16.5815 1.89596 17.0504 2.3648C17.5192 2.83363 17.5192 3.59432 17.0504 4.06315L13.699 7.4146L18.2838 11.9994L21.6353 8.64803C22.1041 8.1792 22.1041 7.4185 21.6353 6.94967C21.1664 6.48084 20.4057 6.48084 19.9369 6.94967L16.5854 10.3011L12.0006 5.71624ZM5.71624 12.0006L2.3648 15.352C1.89596 15.8208 1.89596 16.5815 2.3648 17.0504C2.83363 17.5192 3.59432 17.5192 4.06315 17.0504L7.4146 13.699L11.9994 18.2838L8.64803 21.6353C8.1792 22.1041 7.4185 22.1041 6.94967 21.6353C6.48084 21.1664 6.48084 20.4057 6.94967 19.9369L10.3011 16.5854L5.71624 12.0006ZM5.71624 11.9994L10.3011 7.4146L6.94967 4.06315C6.48084 3.59432 6.48084 2.83363 6.94967 2.3648C7.4185 1.89596 8.1792 1.89596 8.64803 2.3648L11.9994 5.71624L7.4146 10.3011L4.06315 6.94967C3.59432 6.48084 2.83363 6.48084 2.3648 6.94967C1.89596 7.4185 1.89596 8.1792 2.3648 8.64803L5.71624 11.9994Z" />
+              </svg>
+            </div>
+            <div class="claude-header-info" style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3 style="margin:0;">Claude Code</h3>
+                <span class="badge badge-secondary" id="claude-connection-status" style="padding: 2px 8px; font-size: 11px;">
+                  <span class="status-dot stopped" id="claude-status-dot"></span>
+                  <span class="status-text" id="claude-status-text">Chưa kết nối</span>
+                </span>
+              </div>
+              <p style="margin:0; font-size: 11.5px; color: var(--text-2);">Anthropic Claude Code CLI Settings</p>
+            </div>
+            <button class="btn-icon claude-collapse-btn collapsed" id="claude-toggle-card">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+            </button>
+          </div>
+
+          <!-- Loading state progress bar -->
+          <div class="progress progress-indeterminate" id="claude-progress" style="display:none;"><div class="progress-bar"></div></div>
+
+          <!-- Card Body (collapsed by default) -->
+          <div class="claude-card-body collapsed" id="claude-card-body">
+            
+            <!-- Endpoint select row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Select Endpoint <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control">
+                <select class="shutdown-select" id="claude-endpoint-select">
+                  <option value="https://api.anthropic.com">https://api.anthropic.com</option>
+                  <option value="http://127.0.0.1:20128/v1">http://127.0.0.1:20128/v1</option>
+                  <option value="https://api.tuongtacfree.vn/">https://api.tuongtacfree.vn/</option>
+                  <option value="custom">Custom...</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Custom URL Input row (shows when custom is selected) -->
+            <div class="claude-form-row" id="claude-custom-url-row" style="display:none;">
+              <label class="claude-row-label">Custom URL <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control">
+                <input type="text" class="claude-input-text" id="claude-custom-url" placeholder="Nhập Base URL (e.g. https://api.proxy.com/)">
+              </div>
+            </div>
+
+            <!-- Current endpoint display -->
+            <div class="claude-form-row font-mono-row">
+              <span class="claude-row-label">Current <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+              <span class="claude-row-value text-mono" id="claude-current-endpoint">https://api.anthropic.com</span>
+            </div>
+
+            <!-- API Key row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Khóa API <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control">
+                <input type="text" class="claude-input-text" id="claude-api-key" placeholder="sk-...">
+              </div>
+            </div>
+
+            <!-- Claude Opus model row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Claude Opus <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control select-group">
+                <input type="text" class="claude-input-text" id="claude-model-opus" placeholder="Chưa cấu hình model Opus">
+                <button class="claude-clear-btn" id="claude-clear-opus" title="Xóa">✕</button>
+                <div class="claude-select-preset-wrapper">
+                  <button class="btn btn-secondary btn-sm" id="claude-select-opus-btn">Select Model</button>
+                  <div class="claude-preset-dropdown" id="claude-preset-opus" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Claude Sonnet model row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Claude Sonnet <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control select-group">
+                <input type="text" class="claude-input-text" id="claude-model-sonnet" placeholder="Chưa cấu hình model Sonnet">
+                <button class="claude-clear-btn" id="claude-clear-sonnet" title="Xóa">✕</button>
+                <div class="claude-select-preset-wrapper">
+                  <button class="btn btn-secondary btn-sm" id="claude-select-sonnet-btn">Select Model</button>
+                  <div class="claude-preset-dropdown" id="claude-preset-sonnet" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Claude Haiku model row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Claude Haiku <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control select-group">
+                <input type="text" class="claude-input-text" id="claude-model-haiku" placeholder="Chưa cấu hình model Haiku">
+                <button class="claude-clear-btn" id="claude-clear-haiku" title="Xóa">✕</button>
+                <div class="claude-select-preset-wrapper">
+                  <button class="btn btn-secondary btn-sm" id="claude-select-haiku-btn">Select Model</button>
+                  <div class="claude-preset-dropdown" id="claude-preset-haiku" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model override main config -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Filter naming <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control select-group">
+                <label class="checkbox-row" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+                  <input type="checkbox" id="claude-filter-naming" style="cursor:pointer; width:16px; height:16px;">
+                  <span style="font-size: 13.5px; color: var(--text-2);">Filter naming requests</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Alert Section -->
+            <div class="alert alert-info" id="claude-alert" style="display:none; margin: 16px 0 0 0;">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+              <div class="alert-body">
+                <div class="alert-desc" id="claude-alert-text">Đang tải cấu hình...</div>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="claude-card-actions" style="margin-top: 20px; display:flex; gap:10px;">
+              <button class="btn btn-success" id="claude-apply-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Áp dụng
+              </button>
+              <button class="btn btn-secondary" id="claude-reset-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Đặt lại
+              </button>
+              <button class="btn btn-secondary" id="claude-manual-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Manual Config
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Cline Card Placeholder -->
+        <div class="claude-card" style="opacity: 0.7; margin-top: 12px;">
+          <div class="claude-card-header" style="cursor: not-allowed;">
+            <div class="claude-card-icon-wrapper" style="background: #1e3a8a;">
+              <!-- Cline logo placeholder -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zM6 10h4v2H6zm0 4h8v2H6z"/>
+              </svg>
+            </div>
+            <div class="claude-header-info" style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3 style="margin:0;">Cline / Roo Code</h3>
+                <span class="badge badge-secondary" style="padding: 2px 8px; font-size: 11px;">Sắp hỗ trợ</span>
+              </div>
+              <p style="margin:0; font-size: 11.5px; color: var(--text-2);">Cấu hình Cline VS Code Extension</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aider Card Placeholder -->
+        <div class="claude-card" style="opacity: 0.7; margin-top: 12px;">
+          <div class="claude-card-header" style="cursor: not-allowed;">
+            <div class="claude-card-icon-wrapper" style="background: #065f46;">
+              <!-- Aider logo placeholder -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+              </svg>
+            </div>
+            <div class="claude-header-info" style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3 style="margin:0;">Aider</h3>
+                <span class="badge badge-secondary" style="padding: 2px 8px; font-size: 11px;">Sắp hỗ trợ</span>
+              </div>
+              <p style="margin:0; font-size: 11.5px; color: var(--text-2);">Cấu hình Aider Git AI CLI Assistant</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
