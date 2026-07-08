@@ -29,15 +29,16 @@ function loadSettings() {
       env.CLAUDE_CODE_ENABLE_AUTO_MODE = '1';
       return {
         model: parsed.model || DEFAULTS.model,
+        effortLevel: parsed.effortLevel || '',
         filterNamingRequests: !!parsed.filterNamingRequests,
-        permissions: { ...(parsed.permissions || {}), defaultMode: 'auto' },
+        permissions: { ...(parsed.permissions || {}), defaultMode: parsed.permissions?.defaultMode || 'auto' },
         env
       };
     }
   } catch (e) {
     console.error('Error loading Claude settings:', e);
   }
-  return { ...DEFAULTS, filterNamingRequests: false };
+  return { ...DEFAULTS, effortLevel: '', filterNamingRequests: false };
 }
 
 function saveSettings(config) {
@@ -52,6 +53,23 @@ function saveSettings(config) {
       } catch (_) {}
     }
 
+    const env = {
+      ...(existing.env || {}),
+      CLAUDE_CODE_ENABLE_AUTO_MODE: '1',
+      ANTHROPIC_BASE_URL: config.env?.ANTHROPIC_BASE_URL || '',
+      ANTHROPIC_AUTH_TOKEN: config.env?.ANTHROPIC_AUTH_TOKEN || '',
+      ANTHROPIC_DEFAULT_OPUS_MODEL: config.env?.ANTHROPIC_DEFAULT_OPUS_MODEL || '',
+      ANTHROPIC_DEFAULT_SONNET_MODEL: config.env?.ANTHROPIC_DEFAULT_SONNET_MODEL || '',
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: config.env?.ANTHROPIC_DEFAULT_HAIKU_MODEL || ''
+    };
+
+    const subagentModel = config.env?.CLAUDE_CODE_SUBAGENT_MODEL;
+    if (subagentModel) {
+      env.CLAUDE_CODE_SUBAGENT_MODEL = subagentModel;
+    } else {
+      delete env.CLAUDE_CODE_SUBAGENT_MODEL;
+    }
+
     const cleanConfig = {
       ...existing,
       model: config.model || 'opus',
@@ -59,18 +77,16 @@ function saveSettings(config) {
       permissions: {
         ...(existing.permissions || {}),
         ...(config.permissions || {}),
-        defaultMode: 'auto'
+        defaultMode: config.permissions?.defaultMode || 'auto'
       },
-      env: {
-        ...(existing.env || {}),
-        CLAUDE_CODE_ENABLE_AUTO_MODE: '1',
-        ANTHROPIC_BASE_URL: config.env?.ANTHROPIC_BASE_URL || '',
-        ANTHROPIC_AUTH_TOKEN: config.env?.ANTHROPIC_AUTH_TOKEN || '',
-        ANTHROPIC_DEFAULT_OPUS_MODEL: config.env?.ANTHROPIC_DEFAULT_OPUS_MODEL || '',
-        ANTHROPIC_DEFAULT_SONNET_MODEL: config.env?.ANTHROPIC_DEFAULT_SONNET_MODEL || '',
-        ANTHROPIC_DEFAULT_HAIKU_MODEL: config.env?.ANTHROPIC_DEFAULT_HAIKU_MODEL || ''
-      }
+      env
     };
+
+    if (config.effortLevel) {
+      cleanConfig.effortLevel = config.effortLevel;
+    } else {
+      delete cleanConfig.effortLevel;
+    }
 
     fs.writeFileSync(CLAUDE_SETTINGS_PATH, JSON.stringify(cleanConfig, null, 2), 'utf8');
     return { ok: true };

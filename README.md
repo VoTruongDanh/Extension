@@ -7,6 +7,7 @@ Tiện ích máy tính - Ứng dụng Electron cung cấp các công cụ quản
 ```bash
 npm start
 npm run build
+npm run build:installer
 ```
 
 - `npm start`: chạy app local bằng Electron

@@ -3,12 +3,63 @@ const ui = require('../../ui');
 
 let originalSettings = null;
 
+const RECENT_URLS_KEY = 'claude-recent-urls';
+const MAX_RECENT_URLS = 5;
+const STATIC_ENDPOINTS = [
+  'https://api.anthropic.com',
+  'http://127.0.0.1:20128/v1',
+  'https://api.tuongtacfree.vn/'
+];
+
+function getRecentUrls() {
+  try {
+    const raw = localStorage.getItem(RECENT_URLS_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list.filter(u => typeof u === 'string' && u.trim()) : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function addRecentUrl(url) {
+  const clean = (url || '').trim();
+  if (!clean || STATIC_ENDPOINTS.includes(clean)) return;
+  let list = getRecentUrls().filter(u => u !== clean);
+  list.unshift(clean);
+  list = list.slice(0, MAX_RECENT_URLS);
+  try {
+    localStorage.setItem(RECENT_URLS_KEY, JSON.stringify(list));
+  } catch (_) {}
+}
+
+function renderRecentUrlOptions(selectEl) {
+  selectEl.querySelectorAll('option.recent-url-option, optgroup.recent-url-group').forEach(el => el.remove());
+
+  const recents = getRecentUrls();
+  if (recents.length === 0) return;
+
+  const customOption = selectEl.querySelector('option[value="custom"]');
+  const group = document.createElement('optgroup');
+  group.label = 'URL gần đây';
+  group.className = 'recent-url-group';
+
+  recents.forEach(url => {
+    const opt = document.createElement('option');
+    opt.value = url;
+    opt.textContent = url;
+    opt.className = 'recent-url-option';
+    group.appendChild(opt);
+  });
+
+  selectEl.insertBefore(group, customOption);
+}
+
 async function load() {
   ui.showProgress('claude');
   showAlert('Đang tải cấu hình...', 'info');
 
   try {
-    const { config, path } = await ipcRenderer.invoke('claude-get-settings');
+    const { config } = await ipcRenderer.invoke('claude-get-settings');
     originalSettings = config;
 
     const env = config.env || {};
@@ -17,6 +68,8 @@ async function load() {
     const selectEl = ui.$('claude-endpoint-select');
     const customRow = ui.$('claude-custom-url-row');
     const customInput = ui.$('claude-custom-url');
+
+    renderRecentUrlOptions(selectEl);
 
     let endpointMatched = false;
     for (let option of selectEl.options) {
@@ -43,6 +96,10 @@ async function load() {
     ui.$('claude-model-opus').value = env.ANTHROPIC_DEFAULT_OPUS_MODEL || '';
     ui.$('claude-model-sonnet').value = env.ANTHROPIC_DEFAULT_SONNET_MODEL || '';
     ui.$('claude-model-haiku').value = env.ANTHROPIC_DEFAULT_HAIKU_MODEL || '';
+    ui.$('claude-model-subagent').value = env.CLAUDE_CODE_SUBAGENT_MODEL || '';
+
+    ui.$('claude-effort-level').value = config.effortLevel || '';
+    ui.$('claude-default-mode').value = config.permissions?.defaultMode || 'auto';
 
     ui.$('claude-filter-naming').checked = !!config.filterNamingRequests;
 
@@ -64,8 +121,6 @@ function updateCurrentEndpointDisplay(url) {
 }
 
 async function checkConnectionStatus(baseUrl, apiKey, model) {
-  const dot = ui.$('claude-status-dot');
-  const text = ui.$('claude-status-text');
   const connectedBadge = ui.$('claude-connected-badge');
   const connectionBadge = ui.$('claude-connection-status');
 
@@ -151,10 +206,12 @@ function init() {
   setupPresetDropdown('claude-select-opus-btn', 'claude-preset-opus', 'claude-model-opus');
   setupPresetDropdown('claude-select-sonnet-btn', 'claude-preset-sonnet', 'claude-model-sonnet');
   setupPresetDropdown('claude-select-haiku-btn', 'claude-preset-haiku', 'claude-model-haiku');
+  setupPresetDropdown('claude-select-subagent-btn', 'claude-preset-subagent', 'claude-model-subagent');
 
   setupClearButton('claude-clear-opus', 'claude-model-opus');
   setupClearButton('claude-clear-sonnet', 'claude-model-sonnet');
   setupClearButton('claude-clear-haiku', 'claude-model-haiku');
+  setupClearButton('claude-clear-subagent', 'claude-model-subagent');
 
   const applyBtn = ui.$('claude-apply-btn');
   if (applyBtn) {
@@ -173,25 +230,42 @@ function init() {
         const opusModel = ui.$('claude-model-opus').value.trim();
         const sonnetModel = ui.$('claude-model-sonnet').value.trim();
         const haikuModel = ui.$('claude-model-haiku').value.trim();
+        const subagentModel = ui.$('claude-model-subagent').value.trim();
+        const effortLevel = ui.$('claude-effort-level').value;
+        const defaultMode = ui.$('claude-default-mode').value || 'auto';
         const filterNaming = ui.$('claude-filter-naming').checked;
 
         const config = {
           model: 'opus',
+          effortLevel,
           filterNamingRequests: filterNaming,
+          permissions: {
+            defaultMode
+          },
           env: {
             ANTHROPIC_BASE_URL: baseUrl,
             ANTHROPIC_AUTH_TOKEN: apiKey,
             ANTHROPIC_DEFAULT_OPUS_MODEL: opusModel,
             ANTHROPIC_DEFAULT_SONNET_MODEL: sonnetModel,
-            ANTHROPIC_DEFAULT_HAIKU_MODEL: haikuModel
+            ANTHROPIC_DEFAULT_HAIKU_MODEL: haikuModel,
+            CLAUDE_CODE_SUBAGENT_MODEL: subagentModel
           }
         };
 
         const result = await ipcRenderer.invoke('claude-save-settings', config);
         if (result.ok) {
           originalSettings = config;
+          addRecentUrl(baseUrl);
+          renderRecentUrlOptions(selectEl);
+          for (const option of selectEl.options) {
+            if (option.value === baseUrl) {
+              selectEl.value = baseUrl;
+              customRow.style.display = 'none';
+              break;
+            }
+          }
           ui.showToast('Đã áp dụng cấu hình Claude Code', 'success');
-          
+
           await checkConnectionStatus(baseUrl, apiKey, haikuModel);
         } else {
           showAlert(`Lỗi lưu cấu hình: ${result.error}`, 'error');
@@ -235,12 +309,15 @@ function getCurrentCreds() {
 }
 
 function setStatus(dropdown, text) {
-  dropdown.querySelector('.claude-preset-list').innerHTML =
-    `<div class="claude-preset-status">${text}</div>`;
+  const listEl = dropdown.querySelector('.claude-preset-list');
+  listEl.innerHTML = '';
+  const status = document.createElement('div');
+  status.className = 'claude-preset-status';
+  status.textContent = text;
+  listEl.appendChild(status);
 }
 
 function renderList(dropdown, input, models, filter) {
-  const listEl = dropdown.querySelector('.claude-preset-list');
   const current = input.value.trim();
   const q = (filter || '').toLowerCase();
 
@@ -250,17 +327,25 @@ function renderList(dropdown, input, models, filter) {
   });
 
   if (matches.length === 0) {
-    listEl.innerHTML = `<div class="claude-preset-status">${models && models.length ? 'Không khớp từ khóa' : 'Không tìm thấy model nào'}</div>`;
+    setStatus(dropdown, models && models.length ? 'Không khớp từ khóa' : 'Không tìm thấy model nào');
     return;
   }
 
+  const listEl = dropdown.querySelector('.claude-preset-list');
   listEl.innerHTML = '';
   matches.forEach((m) => {
     const item = document.createElement('div');
     item.className = 'claude-preset-item' + (m.id === current ? ' selected' : '');
     item.dataset.val = m.id;
     if (m.name && m.name !== m.id) {
-      item.innerHTML = `<span class="claude-preset-name">${m.name}</span><span class="claude-preset-id">${m.id}</span>`;
+      const nameEl = document.createElement('span');
+      nameEl.className = 'claude-preset-name';
+      nameEl.textContent = m.name;
+      const idEl = document.createElement('span');
+      idEl.className = 'claude-preset-id';
+      idEl.textContent = m.id;
+      item.appendChild(nameEl);
+      item.appendChild(idEl);
     } else {
       item.textContent = m.id;
     }

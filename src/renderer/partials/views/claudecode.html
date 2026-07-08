@@ -112,6 +112,47 @@
               </div>
             </div>
 
+            <!-- Subagent model row (CLAUDE_CODE_SUBAGENT_MODEL) -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Subagent Model <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control select-group">
+                <input type="text" class="claude-input-text" id="claude-model-subagent" placeholder="Model chạy subagent (nhanh hơn nếu đặt model nhẹ)">
+                <button class="claude-clear-btn" id="claude-clear-subagent" title="Xóa">✕</button>
+                <div class="claude-select-preset-wrapper">
+                  <button class="btn btn-secondary btn-sm" id="claude-select-subagent-btn">Select Model</button>
+                  <div class="claude-preset-dropdown" id="claude-preset-subagent" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Effort level row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Effort Level <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control">
+                <select class="shutdown-select" id="claude-effort-level">
+                  <option value="">Mặc định (không đặt)</option>
+                  <option value="low">low</option>
+                  <option value="medium">medium</option>
+                  <option value="high">high</option>
+                  <option value="xhigh">xhigh (cao nhất)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Default mode row -->
+            <div class="claude-form-row">
+              <label class="claude-row-label">Chế độ mặc định <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
+              <div class="claude-row-control">
+                <select class="shutdown-select" id="claude-default-mode">
+                  <option value="default">Manual (hỏi trước mỗi lần)</option>
+                  <option value="acceptEdits">Edit automatically (tự sửa file)</option>
+                  <option value="plan">Plan mode</option>
+                  <option value="auto">Auto mode (tự chạy tất cả)</option>
+                  <option value="bypassPermissions">Bypass (bỏ mọi kiểm tra)</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Model override main config -->
             <div class="claude-form-row">
               <label class="claude-row-label">Filter naming <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
