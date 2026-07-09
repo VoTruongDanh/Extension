@@ -22,10 +22,7 @@ function markClean() {
 function getCurrentState() {
   return {
     autoLaunch: ui.$('setting-auto-launch').checked,
-    autoHeal: ui.$('setting-auto-heal').checked,
     startMinimized: ui.$('setting-start-minimized').checked,
-    autoStartRouter: ui.$('setting-auto-router').checked,
-    autoStartOpenclaw: ui.$('setting-auto-openclaw').checked,
     minimizeToTray: ui.$('setting-minimize-tray').checked
   };
 }
@@ -38,10 +35,7 @@ function isDirty() {
 function init() {
   ipcRenderer.on('settings-data', (_, s) => {
     ui.$('setting-auto-launch').checked = !!s.autoLaunch;
-    ui.$('setting-auto-heal').checked = !!s.autoHeal;
     ui.$('setting-start-minimized').checked = !!s.startMinimized;
-    ui.$('setting-auto-router').checked = !!s.autoStartRouter;
-    ui.$('setting-auto-openclaw').checked = !!s.autoStartOpenclaw;
     ui.$('setting-minimize-tray').checked = s.minimizeToTray !== false;
     ui.$('settings-path-text').textContent = s._path || '...';
     lastSavedState = getCurrentState();
@@ -60,10 +54,7 @@ function init() {
 
   [
     'setting-auto-launch',
-    'setting-auto-heal',
     'setting-start-minimized',
-    'setting-auto-router',
-    'setting-auto-openclaw',
     'setting-minimize-tray'
   ].forEach((id) => {
     const el = ui.$(id);
@@ -72,7 +63,6 @@ function init() {
 
   ui.$('save-settings-btn').addEventListener('click', () => {
     const current = getCurrentState();
-    ipcRenderer.send('set-auto-heal', current.autoHeal);
     ipcRenderer.send('save-settings', current);
   });
 

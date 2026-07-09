@@ -37,135 +37,139 @@
 
           <!-- Card Body (collapsed by default) -->
           <div class="claude-card-body collapsed" id="claude-card-body">
-            
-            <!-- Endpoint select row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Select Endpoint <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control">
-                <select class="shutdown-select" id="claude-endpoint-select">
-                  <option value="https://api.anthropic.com">https://api.anthropic.com</option>
-                  <option value="http://127.0.0.1:20128/v1">http://127.0.0.1:20128/v1</option>
-                  <option value="https://api.tuongtacfree.vn/">https://api.tuongtacfree.vn/</option>
-                  <option value="custom">Custom...</option>
-                </select>
-              </div>
-            </div>
 
-            <!-- Custom URL Input row (shows when custom is selected) -->
-            <div class="claude-form-row" id="claude-custom-url-row" style="display:none;">
-              <label class="claude-row-label">Custom URL <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control">
-                <input type="text" class="claude-input-text" id="claude-custom-url" placeholder="Nhập Base URL (e.g. https://api.proxy.com/)">
-              </div>
-            </div>
+            <div class="claude-form-grid">
 
-            <!-- Current endpoint display -->
-            <div class="claude-form-row font-mono-row">
-              <span class="claude-row-label">Current <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
-              <span class="claude-row-value text-mono" id="claude-current-endpoint">https://api.anthropic.com</span>
-            </div>
-
-            <!-- API Key row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Khóa API <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control">
-                <input type="text" class="claude-input-text" id="claude-api-key" placeholder="sk-...">
-              </div>
-            </div>
-
-            <!-- Claude Opus model row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Claude Opus <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control select-group">
-                <input type="text" class="claude-input-text" id="claude-model-opus" placeholder="Chưa cấu hình model Opus">
-                <button class="claude-clear-btn" id="claude-clear-opus" title="Xóa">✕</button>
-                <div class="claude-select-preset-wrapper">
-                  <button class="btn btn-secondary btn-sm" id="claude-select-opus-btn">Select Model</button>
-                  <div class="claude-preset-dropdown" id="claude-preset-opus" style="display:none;"></div>
+              <!-- Endpoint select row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Endpoint</label>
+                <div class="claude-row-control">
+                  <select class="shutdown-select" id="claude-endpoint-select">
+                    <option value="https://api.anthropic.com">https://api.anthropic.com</option>
+                    <option value="http://127.0.0.1:20128/v1">http://127.0.0.1:20128/v1</option>
+                    <option value="https://api.tuongtacfree.vn/">https://api.tuongtacfree.vn/</option>
+                    <option value="custom">Custom...</option>
+                  </select>
                 </div>
               </div>
-            </div>
 
-            <!-- Claude Sonnet model row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Claude Sonnet <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control select-group">
-                <input type="text" class="claude-input-text" id="claude-model-sonnet" placeholder="Chưa cấu hình model Sonnet">
-                <button class="claude-clear-btn" id="claude-clear-sonnet" title="Xóa">✕</button>
-                <div class="claude-select-preset-wrapper">
-                  <button class="btn btn-secondary btn-sm" id="claude-select-sonnet-btn">Select Model</button>
-                  <div class="claude-preset-dropdown" id="claude-preset-sonnet" style="display:none;"></div>
+              <!-- Current endpoint display -->
+              <div class="claude-form-row font-mono-row">
+                <span class="claude-row-label">Current</span>
+                <span class="claude-row-value text-mono" id="claude-current-endpoint">https://api.anthropic.com</span>
+              </div>
+
+              <!-- Custom URL Input row (shows when custom is selected) -->
+              <div class="claude-form-row claude-row-full" id="claude-custom-url-row" style="display:none;">
+                <label class="claude-row-label">Custom URL</label>
+                <div class="claude-row-control">
+                  <input type="text" class="claude-input-text" id="claude-custom-url" placeholder="Nhập Base URL (e.g. https://api.proxy.com/)">
                 </div>
               </div>
-            </div>
 
-            <!-- Claude Haiku model row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Claude Haiku <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control select-group">
-                <input type="text" class="claude-input-text" id="claude-model-haiku" placeholder="Chưa cấu hình model Haiku">
-                <button class="claude-clear-btn" id="claude-clear-haiku" title="Xóa">✕</button>
-                <div class="claude-select-preset-wrapper">
-                  <button class="btn btn-secondary btn-sm" id="claude-select-haiku-btn">Select Model</button>
-                  <div class="claude-preset-dropdown" id="claude-preset-haiku" style="display:none;"></div>
+              <!-- API Key row -->
+              <div class="claude-form-row claude-row-full">
+                <label class="claude-row-label">Khóa API</label>
+                <div class="claude-row-control">
+                  <input type="text" class="claude-input-text" id="claude-api-key" placeholder="sk-...">
                 </div>
               </div>
-            </div>
 
-            <!-- Subagent model row (CLAUDE_CODE_SUBAGENT_MODEL) -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Subagent Model <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control select-group">
-                <input type="text" class="claude-input-text" id="claude-model-subagent" placeholder="Model chạy subagent (nhanh hơn nếu đặt model nhẹ)">
-                <button class="claude-clear-btn" id="claude-clear-subagent" title="Xóa">✕</button>
-                <div class="claude-select-preset-wrapper">
-                  <button class="btn btn-secondary btn-sm" id="claude-select-subagent-btn">Select Model</button>
-                  <div class="claude-preset-dropdown" id="claude-preset-subagent" style="display:none;"></div>
+              <!-- Claude Opus model row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Claude Opus</label>
+                <div class="claude-row-control select-group">
+                  <input type="text" class="claude-input-text" id="claude-model-opus" placeholder="Chưa cấu hình model Opus">
+                  <button class="claude-clear-btn" id="claude-clear-opus" title="Xóa">✕</button>
+                  <div class="claude-select-preset-wrapper">
+                    <button class="btn btn-secondary btn-sm" id="claude-select-opus-btn">Select Model</button>
+                    <div class="claude-preset-dropdown" id="claude-preset-opus" style="display:none;"></div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Effort level row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Effort Level <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control">
-                <select class="shutdown-select" id="claude-effort-level">
-                  <option value="">Mặc định (không đặt)</option>
-                  <option value="low">low</option>
-                  <option value="medium">medium</option>
-                  <option value="high">high</option>
-                  <option value="xhigh">xhigh (cao nhất)</option>
-                </select>
+              <!-- Claude Sonnet model row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Claude Sonnet</label>
+                <div class="claude-row-control select-group">
+                  <input type="text" class="claude-input-text" id="claude-model-sonnet" placeholder="Chưa cấu hình model Sonnet">
+                  <button class="claude-clear-btn" id="claude-clear-sonnet" title="Xóa">✕</button>
+                  <div class="claude-select-preset-wrapper">
+                    <button class="btn btn-secondary btn-sm" id="claude-select-sonnet-btn">Select Model</button>
+                    <div class="claude-preset-dropdown" id="claude-preset-sonnet" style="display:none;"></div>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Default mode row -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Chế độ mặc định <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control">
-                <select class="shutdown-select" id="claude-default-mode">
-                  <option value="default">Manual (hỏi trước mỗi lần)</option>
-                  <option value="acceptEdits">Edit automatically (tự sửa file)</option>
-                  <option value="plan">Plan mode</option>
-                  <option value="auto">Auto mode (tự chạy tất cả)</option>
-                  <option value="bypassPermissions">Bypass (bỏ mọi kiểm tra)</option>
-                </select>
+              <!-- Claude Haiku model row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Claude Haiku</label>
+                <div class="claude-row-control select-group">
+                  <input type="text" class="claude-input-text" id="claude-model-haiku" placeholder="Chưa cấu hình model Haiku">
+                  <button class="claude-clear-btn" id="claude-clear-haiku" title="Xóa">✕</button>
+                  <div class="claude-select-preset-wrapper">
+                    <button class="btn btn-secondary btn-sm" id="claude-select-haiku-btn">Select Model</button>
+                    <div class="claude-preset-dropdown" id="claude-preset-haiku" style="display:none;"></div>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Model override main config -->
-            <div class="claude-form-row">
-              <label class="claude-row-label">Filter naming <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></label>
-              <div class="claude-row-control select-group">
-                <label class="checkbox-row" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
-                  <input type="checkbox" id="claude-filter-naming" style="cursor:pointer; width:16px; height:16px;">
-                  <span style="font-size: 13.5px; color: var(--text-2);">Filter naming requests</span>
-                </label>
+              <!-- Subagent model row (CLAUDE_CODE_SUBAGENT_MODEL) -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Subagent Model</label>
+                <div class="claude-row-control select-group">
+                  <input type="text" class="claude-input-text" id="claude-model-subagent" placeholder="Model chạy subagent">
+                  <button class="claude-clear-btn" id="claude-clear-subagent" title="Xóa">✕</button>
+                  <div class="claude-select-preset-wrapper">
+                    <button class="btn btn-secondary btn-sm" id="claude-select-subagent-btn">Select Model</button>
+                    <div class="claude-preset-dropdown" id="claude-preset-subagent" style="display:none;"></div>
+                  </div>
+                </div>
               </div>
+
+              <!-- Effort level row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Effort Level</label>
+                <div class="claude-row-control">
+                  <select class="shutdown-select" id="claude-effort-level">
+                    <option value="">Mặc định (không đặt)</option>
+                    <option value="low">low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                    <option value="xhigh">xhigh (cao nhất)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Default mode row -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Chế độ mặc định</label>
+                <div class="claude-row-control">
+                  <select class="shutdown-select" id="claude-default-mode">
+                    <option value="default">Manual (hỏi trước mỗi lần)</option>
+                    <option value="acceptEdits">Edit automatically (tự sửa file)</option>
+                    <option value="plan">Plan mode</option>
+                    <option value="auto">Auto mode (tự chạy tất cả)</option>
+                    <option value="bypassPermissions">Bypass (bỏ mọi kiểm tra)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Filter naming -->
+              <div class="claude-form-row">
+                <label class="claude-row-label">Filter naming</label>
+                <div class="claude-row-control select-group">
+                  <label class="checkbox-row" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="claude-filter-naming" style="cursor:pointer; width:16px; height:16px;">
+                    <span style="font-size: 13.5px; color: var(--text-2);">Filter naming requests</span>
+                  </label>
+                </div>
+              </div>
+
             </div>
 
             <!-- Alert Section -->
-            <div class="alert alert-info" id="claude-alert" style="display:none; margin: 16px 0 0 0;">
+            <div class="alert alert-info" id="claude-alert" style="display:none; margin: 16px 20px 0;">
               <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
               <div class="alert-body">
                 <div class="alert-desc" id="claude-alert-text">Đang tải cấu hình...</div>
@@ -173,7 +177,7 @@
             </div>
 
             <!-- Action buttons -->
-            <div class="claude-card-actions" style="margin-top: 20px; display:flex; gap:10px;">
+            <div class="claude-card-actions" style="margin-top: 20px; display:flex; gap:10px; padding: 16px 20px 0;">
               <button class="btn btn-success" id="claude-apply-btn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 Áp dụng

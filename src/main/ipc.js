@@ -11,25 +11,6 @@ const killPortTools = require('./tools/kill-port');
 const syncToken = require('./syncToken');
 const claudeTools   = require('./tools/claudecode');
 
-const SERVICE_CONFIGS = {
-  router: {
-    key: 'router',
-    label: '9Router',
-    cmd: '9router',
-    args: [],
-    statusCh: 'router-status',
-    logCh: 'router-log'
-  },
-  openclaw: {
-    key: 'openclaw',
-    label: 'OpenClaw',
-    cmd: 'openclaw',
-    args: ['gateway'],
-    statusCh: 'openclaw-status',
-    logCh: 'openclaw-log'
-  }
-};
-
 function normalizeText(value) {
   return String(value || '').trim();
 }
@@ -525,9 +506,6 @@ function persistSettings(settings) {
 function sanitizeSettingsForSync(settings) {
   return {
     autoLaunch: !!settings.autoLaunch,
-    autoHeal: !!settings.autoHeal,
-    autoStartRouter: !!settings.autoStartRouter,
-    autoStartOpenclaw: !!settings.autoStartOpenclaw,
     minimizeToTray: settings.minimizeToTray !== false,
     startMinimized: !!settings.startMinimized,
     prompts: Array.isArray(settings.prompts) ? settings.prompts : [],
@@ -536,47 +514,12 @@ function sanitizeSettingsForSync(settings) {
   };
 }
 
-function register({ ipcMain, app, shell, settings, services, tray, getWindow }) {
-  const send = (channel, data) => {
-    const win = getWindow();
-    if (win && !win.isDestroyed()) win.webContents.send(channel, data);
-  };
-
-  const broadcastStatus = async () => {
-    const data = await services.getStatus();
-    send('status-update', data);
-    tray.updateMenu({ routerRunning: data.router.running, openclawRunning: data.openclaw.running });
-    return data;
-  };
-
-  Object.values(SERVICE_CONFIGS).forEach((cfg) => {
-    services.registerService(cfg, {
-      onStatus: (data) => {
-        send(cfg.statusCh, data);
-        broadcastStatus();
-      },
-      onLog: (data) => send(cfg.logCh, data),
-      onCrash: (label, code) => tray.notify(`${label} da crash`, `Process thoat voi code ${code}`),
-      onAutoHeal: (label, reason, attempt) =>
-        tray.notify('Auto-heal', `${label}: ${reason} (${attempt}/3)`)
-    });
-  });
-
-  services.setAutoHealEnabled(!!settings.autoHeal);
-
-  ipcMain.on('check-status', async (event) => {
-    const data = await broadcastStatus();
-    event.reply('status-update', data);
-  });
-
+function register({ ipcMain, app, shell, settings }) {
   ipcMain.on('get-settings', async (event) => {
     const autoLaunch = await checkAutoLaunch();
     event.reply('settings-data', {
       autoLaunch,
-      autoHeal: settings.autoHeal !== false,
       startMinimized: settings.startMinimized,
-      autoStartRouter: settings.autoStartRouter,
-      autoStartOpenclaw: settings.autoStartOpenclaw,
       minimizeToTray: settings.minimizeToTray,
       sync_token: normalizeText(settings.sync_token),
       sync_meta: settings.sync_meta || null,
@@ -586,7 +529,7 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
 
   ipcMain.on('save-settings', (event, newSettings) => {
     const wasAutoLaunch = settings.autoLaunch;
-    const keys = ['autoLaunch', 'autoHeal', 'startMinimized', 'autoStartRouter', 'autoStartOpenclaw', 'minimizeToTray', 'sync_token'];
+    const keys = ['autoLaunch', 'startMinimized', 'minimizeToTray', 'sync_token'];
 
     keys.forEach((key) => {
       if (newSettings[key] !== undefined) settings[key] = newSettings[key];
@@ -598,18 +541,7 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
       setAutoLaunch(newSettings.autoLaunch);
     }
 
-    if (newSettings.autoHeal !== undefined) {
-      services.setAutoHealEnabled(newSettings.autoHeal);
-    }
-
     event.reply('settings-saved');
-  });
-
-  ipcMain.on('set-auto-heal', (event, enabled) => {
-    settings.autoHeal = !!enabled;
-    settings._save();
-    services.setAutoHealEnabled(settings.autoHeal);
-    event.reply('auto-heal-saved', { enabled: settings.autoHeal });
   });
 
   ipcMain.on('get-app-version', (event) => event.reply('app-version', app.getVersion()));
@@ -701,7 +633,7 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
       throw new Error('Hash không khớp, dữ liệu sync có thể bị lỗi');
     }
 
-    const keys = ['autoLaunch', 'autoHeal', 'startMinimized', 'autoStartRouter', 'autoStartOpenclaw', 'minimizeToTray', 'prompts', 'links', 'sync_url'];
+    const keys = ['autoLaunch', 'startMinimized', 'minimizeToTray', 'prompts', 'links', 'sync_url'];
     keys.forEach((key) => {
       if (data[key] !== undefined) settings[key] = data[key];
     });
@@ -845,35 +777,6 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
     return { ok: true, link: updatedLink, links: settings.links };
   });
 
-  Object.values(SERVICE_CONFIGS).forEach((cfg) => {
-    ipcMain.on(`start-${cfg.key}`, () => {
-      services.spawnService({ key: cfg.key });
-    });
-
-    ipcMain.on(`stop-${cfg.key}`, () => {
-      services.stopService({ key: cfg.key });
-    });
-
-    ipcMain.on(`restart-${cfg.key}`, () => {
-      services.restartService({ key: cfg.key });
-    });
-  });
-
-  const UPDATE_MAP = {
-    router: { pkg: '9router', label: '9Router' },
-    openclaw: { pkg: 'openclaw', label: 'OpenClaw' }
-  };
-
-  Object.entries(UPDATE_MAP).forEach(([key, cfg]) => {
-    ipcMain.on(`update-${key}`, (event) => {
-      services.updatePackage({
-        ...cfg,
-        onProgress: (data) => event.reply('update-progress', data),
-        onDone: (data) => event.reply('update-result', data)
-      });
-    });
-  });
-
   ipcMain.on('shutdown-schedule', async (event, { seconds, mode }) => {
     const fn = mode === 'restart' ? shutdownTools.scheduleRestart : shutdownTools.scheduleShutdown;
     const result = await fn(seconds);
@@ -985,7 +888,7 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
     const result = await copyPasteSync.downloadData(code);
     
     if (result.ok && result.data) {
-      const keys = ['autoLaunch', 'autoHeal', 'startMinimized', 'autoStartRouter', 'autoStartOpenclaw', 'minimizeToTray', 'prompts', 'links', 'sync_url'];
+      const keys = ['autoLaunch', 'startMinimized', 'minimizeToTray', 'prompts', 'links', 'sync_url'];
       keys.forEach((key) => {
         if (result.data[key] !== undefined) {
           settings[key] = result.data[key];
@@ -1051,8 +954,6 @@ function register({ ipcMain, app, shell, settings, services, tray, getWindow }) 
     exec(`explorer "${folderPath}"`, () => {});
     return { ok: true };
   });
-
-  return { broadcastStatus };
 }
 
 function setAutoLaunch(enable) {

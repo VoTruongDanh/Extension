@@ -2,7 +2,6 @@ const { ipcRenderer } = require('electron');
 
 const ui = require('./ui');
 const dashboard = require('./views/dashboard');
-const logsView = require('./views/logs');
 const settingsView = require('./views/settings');
 const shutdownView = require('./views/tools/shutdown');
 const networkView = require('./views/tools/network');
@@ -12,21 +11,15 @@ const idmResetView = require('./views/tools/idm-reset');
 const anydeskView = require('./views/tools/anydesk-reset');
 const promptsView = require('./views/tools/prompts');
 const linksView = require('./views/tools/links');
-const routerView = require('./views/router');
-const openclawView = require('./views/openclaw');
 const claudecodeView = require('./views/tools/claudecode');
 const schedulerView = require('./views/scheduler');
-const logPanel = require('./components/logPanel');
 const commandPalette = require('./components/commandPalette');
 const { initThemeToggle } = require('./bootstrap/theme');
 const { createNavigator } = require('./bootstrap/navigation');
 
 const views = {
   dashboard: ui.$('view-dashboard'),
-  router: ui.$('view-router'),
-  openclaw: ui.$('view-openclaw'),
   claudecode: ui.$('view-claudecode'),
-  logs: ui.$('view-logs'),
   settings: ui.$('view-settings'),
   shutdown: ui.$('view-shutdown'),
   scheduler: ui.$('view-scheduler'),
@@ -51,7 +44,6 @@ const viewLoaders = {
 
 const modules = [
   dashboard,
-  logsView,
   settingsView,
   shutdownView,
   schedulerView,
@@ -62,17 +54,12 @@ const modules = [
   anydeskView,
   promptsView,
   linksView,
-  routerView,
-  openclawView,
   claudecodeView,
 ];
 
 const navMap = {
   'nav-dashboard': 'dashboard',
-  'nav-router': 'router',
-  'nav-openclaw': 'openclaw',
   'nav-claudecode': 'claudecode',
-  'nav-logs': 'logs',
   'nav-settings': 'settings',
   'nav-shutdown': 'shutdown',
   'nav-scheduler': 'scheduler',
@@ -125,13 +112,9 @@ function initShell() {
   initQuickLinks();
   initModules();
 
-  logPanel.initLogPanels(['router', 'openclaw']);
-  logPanel.initLogFilters();
   ui.initRipple();
-  ui.initSkeletons(['router', 'openclaw']);
   commandPalette.init({ ipcRenderer, switchView, loadSettings: settingsView.load });
 
-  ipcRenderer.send('check-status');
   ipcRenderer.send('get-app-version');
 
   requestAnimationFrame(() => {

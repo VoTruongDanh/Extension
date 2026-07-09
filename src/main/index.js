@@ -3,13 +3,10 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const { load }     = require('./settings');
-const services     = require('./services');
 const tray         = require('./tray');
 const { register } = require('./ipc');
 
 let mainWindow      = null;
-let statusInterval  = null;
-let broadcastStatus = null;
 
 const settings = load();
 
@@ -110,13 +107,6 @@ function createWindow() {
       mainWindow.maximize();
       mainWindow.show();
     }
-    if (broadcastStatus) broadcastStatus();
-
-    setTimeout(async () => {
-      const status = await services.getStatus();
-      if (settings.autoStartRouter   && !status.router.running)   mainWindow.webContents.send('auto-start', 'router');
-      if (settings.autoStartOpenclaw && !status.openclaw.running) mainWindow.webContents.send('auto-start', 'openclaw');
-    }, 1500);
   });
 
   mainWindow.on('close', (e) => {
@@ -160,24 +150,15 @@ app.whenReady().then(() => {
     }
   );
 
-  const ipc = register({ ipcMain, app, shell, settings, services, tray, getWindow: () => mainWindow });
-  broadcastStatus = ipc.broadcastStatus;
+  register({ ipcMain, app, shell, settings });
 
-  globalShortcut.register('CommandOrControl+1',       () => mainWindow && mainWindow.webContents.send('tray-start-router'));
-  globalShortcut.register('CommandOrControl+2',       () => mainWindow && mainWindow.webContents.send('tray-start-openclaw'));
-  globalShortcut.register('CommandOrControl+Shift+1', () => mainWindow && mainWindow.webContents.send('tray-stop-router'));
-  globalShortcut.register('CommandOrControl+Shift+2', () => mainWindow && mainWindow.webContents.send('tray-stop-openclaw'));
   globalShortcut.register('F12', () => mainWindow && mainWindow.webContents.toggleDevTools());
-
-  statusInterval = setInterval(() => broadcastStatus(), 5000);
 });
 
 app.on('window-all-closed', (e) => e.preventDefault());
 
 app.on('before-quit', () => {
   globalShortcut.unregisterAll();
-  clearInterval(statusInterval);
-  services.killAll();
 });
 
 app.on('activate', () => {

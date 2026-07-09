@@ -25,7 +25,6 @@ npm run build:installer
 - **Lưu ý**: Cần quyền Administrator để kill process
 
 ### Các tính năng khác
-- Quản lý services (9Router, OpenClaw)
 - Quản lý mạng (Network adapters, IP, DNS)
 - Thông tin phần cứng (CPU, RAM, Disk, GPU)
 - Hẹn giờ tắt máy/restart
@@ -43,9 +42,8 @@ npm run build:installer
 │  ├─ main/
 │  │  ├─ index.js                 # Electron app lifecycle
 │  │  ├─ ipc.js                   # đăng ký IPC handlers
-│  │  ├─ services.js              # start/stop/restart services
 │  │  ├─ settings.js              # load/save settings.json
-│  │  ├─ tray.js                  # system tray
+│  │  ├─ tray.js                  # system tray (show/quit)
 │  │  └─ tools/                   # tool phía main process
 │  │     ├─ shutdown.js
 │  │     ├─ network.js
@@ -56,7 +54,6 @@ npm run build:installer
 │  │     └─ copy-paste-sync.js
 │  └─ renderer/
 │     ├─ index.js                 # renderer orchestration
-│     ├─ state.js                 # runtime state
 │     ├─ ui.js                    # DOM helpers dùng chung
 │     ├─ bootstrap/
 │     │  ├─ htmlPartials.js       # mount partial HTML trước khi renderer boot
@@ -171,19 +168,6 @@ Không nên nhét thêm HTML dài hoặc logic UI chi tiết vào đây.
 - Chỉnh hành vi ở file JS tương ứng trong `src/renderer/views/`.
 - Chỉnh style ở chunk CSS phù hợp trong `src/renderer/styles/`.
 
-## Cách thêm service mới
-
-Luồng hiện tại chưa hoàn toàn config-driven, nên thêm service mới vẫn cần sửa nhiều điểm.
-
-Các điểm chính:
-
-1. Thêm config và IPC trong `src/main/ipc.js`
-2. Thêm runtime/state trong `src/main/services.js`
-3. Thêm state renderer trong `src/renderer/state.js`
-4. Thêm card HTML ở partial dashboard
-5. Bind UI trong `src/renderer/views/dashboard.js`
-6. Nếu cần tray/control riêng, cập nhật `src/main/tray.js`
-
 ## Lưu ý encoding tiếng Việt
 
 Project này có nhiều text tiếng Việt trong HTML/JS/README, nên:
@@ -208,10 +192,7 @@ Một số key chính:
 | --- | --- |
 | `autoLaunch` | mở cùng Windows |
 | `startMinimized` | khởi động thu nhỏ |
-| `autoStartRouter` | tự chạy 9Router |
-| `autoStartOpenclaw` | tự chạy OpenClaw |
 | `minimizeToTray` | đóng thì ẩn xuống tray |
-| `autoHeal` | tự restart service khi crash/mất phản hồi |
 | `prompts` | thư viện prompt |
 | `links` | thư viện link |
 | `sync_url` | Google Sheets CSV sync URL |
@@ -219,5 +200,4 @@ Một số key chính:
 ## Gợi ý bảo trì tiếp theo
 
 - Tách `src/main/ipc.js` thành nhiều module đăng ký IPC nhỏ hơn.
-- Làm service registry dùng chung cho `main`, `renderer`, `tray`.
 - Tiếp tục chia sâu CSS chunk hiện tại thành `base/components/views/tools` nếu số lượng tool tăng thêm.
