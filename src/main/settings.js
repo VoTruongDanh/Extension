@@ -8,11 +8,13 @@ const DEFAULTS = {
   autoLaunch:        false,
   minimizeToTray:    true,
   startMinimized:    false,
+  appShortcut:       'Ctrl+Alt+E',
   sync_url:          '',
   sync_token:        '',
   sync_meta:         null,
   prompts:           [],
   links:             [],
+  developerApps:     [],
   copypaste_code:        '',
   copypaste_uploaded_at:   null,
   copypaste_downloaded_at: null

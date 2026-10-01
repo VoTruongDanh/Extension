@@ -70,6 +70,38 @@
             <h3>Link</h3>
             <p>Thư mục link hữu ích</p>
           </div>
+
+          <div class="tool-card" id="nav-appRunner">
+            <div class="tool-icon">
+              <svg width="32" height="32" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2.5" y="3" width="15" height="14" rx="2"/>
+                <path d="M6 8l3 2-3 2M11 13h3"/>
+              </svg>
+            </div>
+            <h3>App Runner</h3>
+            <p>Chạy ứng dụng dev một chạm</p>
+          </div>
+
+          <div class="tool-card" id="nav-cloudflared">
+            <div class="tool-icon" style="color: #f6821f;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+              </svg>
+            </div>
+            <h3>Cloudflare Tunnel</h3>
+            <p>Mở & chia sẻ cổng máy tính</p>
+          </div>
         </div>
+
+        <section class="dashboard-pinned-apps" id="dashboard-pinned-apps" style="display:none">
+          <div class="dashboard-section-head">
+            <div>
+              <h2>Ứng dụng đã ghim</h2>
+              <p>Chạy nhanh các dự án thường dùng.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="dashboard-open-app-runner" type="button">Quản lý ứng dụng</button>
+          </div>
+          <div class="dashboard-app-grid" id="dashboard-app-grid"></div>
+        </section>
       </div>
 

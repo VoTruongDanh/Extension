@@ -5,6 +5,7 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
+    "test": "node test/app-runner.test.js",
     "build": "electron-builder",
     "build:installer": "electron-builder --win nsis",
     "build:portable": "electron-builder --win portable",

@@ -55,6 +55,123 @@
   color: var(--text-2);
 }
 
+.dashboard-pinned-apps {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.dashboard-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.dashboard-section-head h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.dashboard-section-head p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.dashboard-app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.dashboard-app-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color .18s, box-shadow .18s, transform .18s;
+}
+
+.dashboard-app-card:hover,
+.dashboard-app-card:focus-visible {
+  outline: 0;
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--border));
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .1);
+  transform: translateY(-2px);
+}
+
+.dashboard-app-card.is-running {
+  border-top: 3px solid var(--green);
+}
+
+.dashboard-app-top,
+.dashboard-app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashboard-app-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--surface);
+  background: var(--text);
+  font: 700 10px/1 Consolas, monospace;
+}
+
+.dashboard-app-copy {
+  min-width: 0;
+  margin: 13px 0;
+}
+
+.dashboard-app-copy h3 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-app-copy p {
+  margin: 3px 0 9px;
+  color: var(--text-3);
+  font-size: 11px;
+}
+
+.dashboard-app-copy code {
+  display: block;
+  padding: 7px 9px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text-2);
+  background: var(--surface-2);
+  font: 10.5px/1.4 Consolas, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-app-footer {
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.dashboard-app-footer > span {
+  color: var(--text-3);
+  font: 10.5px/1 Consolas, monospace;
+}
+
 /* ─── Section Separator ───────────────────────────────────────────────────────── */
 .section-separator {
   height: 1px;

@@ -1,0 +1,652 @@
+/* ─── Cloudflare Tunnel Styles ───────────────────────────────────────────── */
+
+.cf-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color var(--animation-normal) var(--ease);
+}
+
+.cf-card:hover {
+  border-color: rgba(246, 130, 31, 0.5);
+}
+
+.cf-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.cf-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cf-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f6821f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cf-card-title-group h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.cf-card-title-group p {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+
+.cf-card-body {
+  padding: 20px;
+}
+
+/* Form layout */
+.cf-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cf-input-row {
+  display: grid;
+  grid-template-columns: 120px 140px 1fr auto;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  .cf-input-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cf-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.cf-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color var(--animation-fast);
+}
+
+.cf-input:focus {
+  border-color: #f6821f;
+}
+
+.cf-protocol-select {
+  width: 100%;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13.5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cf-btn-start {
+  height: 38px;
+  padding: 0 20px;
+  background: #f6821f !important;
+  border: 1px solid #f6821f !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background var(--animation-fast);
+  white-space: nowrap;
+}
+
+.cf-btn-start:hover {
+  background: #e56000 !important;
+  border-color: #e56000 !important;
+}
+
+/* Presets & Chips */
+.cf-presets-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.cf-presets-label {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-right: 4px;
+}
+
+.cf-preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cf-chip {
+  padding: 5px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--animation-fast);
+}
+
+.cf-chip:hover {
+  background: rgba(246, 130, 31, 0.12);
+  border-color: #f6821f;
+  color: #f6821f;
+}
+
+.cf-btn-scan {
+  margin-left: auto;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+}
+
+/* Open Ports Drawer */
+.cf-open-ports-drawer {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.cf-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.cf-open-ports-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.cf-open-port-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--animation-fast);
+}
+
+.cf-open-port-item:hover {
+  border-color: #f6821f;
+  background: rgba(246, 130, 31, 0.08);
+}
+
+.cf-port-num {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.cf-port-proc {
+  font-size: 11px;
+  color: var(--text-2);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Checkbox */
+.cf-advanced-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.cf-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.cf-checkbox-label input[type="checkbox"] {
+  accent-color: #f6821f;
+  cursor: pointer;
+}
+
+/* Active Tunnels Section */
+.cf-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 0 12px 0;
+}
+
+.cf-section-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cf-tunnels-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+/* Individual Tunnel Card */
+.cf-tunnel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all var(--animation-normal);
+}
+
+.cf-tunnel-card.online {
+  border-left: 4px solid var(--green);
+}
+
+.cf-tunnel-card.starting {
+  border-left: 4px solid var(--amber);
+}
+
+.cf-tunnel-card.stopped {
+  border-left: 4px solid var(--text-3);
+  opacity: 0.75;
+}
+
+.cf-tunnel-card.error {
+  border-left: 4px solid var(--red);
+}
+
+.cf-tunnel-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cf-tunnel-ports-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cf-local-pill {
+  padding: 5px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cf-arrow-divider {
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+}
+
+.cf-public-link-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cf-public-link {
+  font-family: monospace;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f6821f;
+  text-decoration: none;
+  background: rgba(246, 130, 31, 0.08);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(246, 130, 31, 0.3);
+  transition: all var(--animation-fast);
+}
+
+.cf-public-link:hover {
+  background: rgba(246, 130, 31, 0.16);
+  text-decoration: underline;
+}
+
+.cf-tunnel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cf-tunnel-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  gap: 5px;
+  border-radius: 8px;
+}
+
+.cf-tunnel-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-2);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.cf-meta-items {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cf-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Empty State */
+.cf-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text-2);
+}
+
+.cf-empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px auto;
+  color: var(--text-3);
+}
+
+.cf-empty-state h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.cf-empty-state p {
+  font-size: 13px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Real-time Logs Terminal */
+.cf-log-card {
+  margin-top: 24px;
+}
+
+.cf-log-header {
+  padding: 12px 16px;
+}
+
+.cf-log-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cf-current-log-port {
+  font-size: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 8px;
+  color: var(--text-2);
+}
+
+.cf-log-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cf-log-controls .btn {
+  border-radius: 8px;
+}
+
+.cf-terminal-body {
+  background: #0f1117;
+  color: #e2e8f0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 14px 16px;
+  height: 240px;
+  overflow-y: auto;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.cf-log-line {
+  word-break: break-all;
+  white-space: pre-wrap;
+  margin-bottom: 3px;
+}
+
+.cf-log-line.error {
+  color: #f87171;
+}
+
+.cf-log-line.warn {
+  color: #fbbf24;
+}
+
+.cf-log-line.highlight {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.cf-log-time {
+  color: #64748b;
+  margin-right: 8px;
+  user-select: none;
+}
+
+.cf-log-placeholder {
+  color: #64748b;
+  text-align: center;
+  padding: 80px 0;
+  font-style: italic;
+}
+
+/* Download Card */
+.cf-download-card {
+  background: var(--surface);
+  border: 1px solid #f6821f;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.cf-download-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.cf-download-sub {
+  font-size: 11.5px;
+  color: var(--text-2);
+  margin-top: 6px;
+}
+
+/* QR Code Modal */
+.cf-qr-modal-dialog {
+  max-width: 380px !important;
+  text-align: center;
+}
+
+.cf-qr-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.cf-qr-canvas-wrapper {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.cf-qr-url-box {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  word-break: break-all;
+  user-select: all;
+}
+
+/* Spinner */
+.spinner-inline {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(246, 130, 31, 0.2);
+  border-top-color: #f6821f;
+  border-radius: 50%;
+  animation: cfSpin 0.7s linear infinite;
+}
+
+@keyframes cfSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Button Color Styling Overrides (Màu đơn sắc, không gradient) ─── */
+.cf-btn-stop,
+.btn.btn-danger,
+.btn.btn-destructive {
+  --btn-fg: #ffffff !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc2626 !important;
+  border-radius: 8px !important;
+}
+
+.cf-btn-stop:hover,
+.btn.btn-danger:hover,
+.btn.btn-destructive:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+.cf-btn-restart {
+  --btn-fg: #ffffff !important;
+  background: #f6821f !important;
+  color: #ffffff !important;
+  border: 1px solid #f6821f !important;
+  border-radius: 8px !important;
+}
+
+.cf-btn-restart:hover {
+  background: #e56000 !important;
+  border-color: #e56000 !important;
+  color: #ffffff !important;
+}
+
+#cloudflared-install-btn {
+  --btn-fg: #ffffff !important;
+  background: #d97706 !important;
+  color: #ffffff !important;
+  border: 1px solid #d97706 !important;
+  border-radius: 8px !important;
+}
+
+#cloudflared-install-btn:hover {
+  background: #b45309 !important;
+  border-color: #b45309 !important;
+}
+
+#cf-stop-all-btn {
+  --btn-fg: #ffffff !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc2626 !important;
+  border-radius: 8px !important;
+}
+
+#cf-stop-all-btn:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+}

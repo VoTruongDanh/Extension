@@ -8,8 +8,10 @@ const networkTools  = require('./tools/network');
 const hardwareTools = require('./tools/hardware');
 const copyPasteSync = require('./tools/copy-paste-sync');
 const killPortTools = require('./tools/kill-port');
+const cloudflaredTools = require('./tools/cloudflared');
 const syncToken = require('./syncToken');
 const claudeTools   = require('./tools/claudecode');
+const { createAppRunner } = require('./tools/app-runner');
 
 function normalizeText(value) {
   return String(value || '').trim();
@@ -514,13 +516,17 @@ function sanitizeSettingsForSync(settings) {
   };
 }
 
-function register({ ipcMain, app, shell, settings }) {
+function register({ ipcMain, app, shell, settings, emit, registerAppShortcut }) {
+  const appRunner = createAppRunner({ ipcMain, dialog, shell, settings, emit });
+  cloudflaredTools.initCloudflared({ emit });
+
   ipcMain.on('get-settings', async (event) => {
     const autoLaunch = await checkAutoLaunch();
     event.reply('settings-data', {
       autoLaunch,
       startMinimized: settings.startMinimized,
       minimizeToTray: settings.minimizeToTray,
+      appShortcut: normalizeText(settings.appShortcut) || 'Ctrl+Alt+E',
       sync_token: normalizeText(settings.sync_token),
       sync_meta: settings.sync_meta || null,
       _path: settings._settingsPath || ''
@@ -529,10 +535,20 @@ function register({ ipcMain, app, shell, settings }) {
 
   ipcMain.on('save-settings', (event, newSettings) => {
     const wasAutoLaunch = settings.autoLaunch;
-    const keys = ['autoLaunch', 'startMinimized', 'minimizeToTray', 'sync_token'];
+    const keys = ['autoLaunch', 'startMinimized', 'minimizeToTray', 'appShortcut', 'sync_token'];
+
+    if (newSettings.appShortcut !== undefined) {
+      const shortcut = normalizeText(newSettings.appShortcut);
+      const result = registerAppShortcut(shortcut);
+      if (!result.ok) {
+        event.reply('settings-save-error', result.error);
+        return;
+      }
+      settings.appShortcut = shortcut;
+    }
 
     keys.forEach((key) => {
-      if (newSettings[key] !== undefined) settings[key] = newSettings[key];
+      if (key !== 'appShortcut' && newSettings[key] !== undefined) settings[key] = newSettings[key];
     });
 
     settings._save();
@@ -954,6 +970,47 @@ function register({ ipcMain, app, shell, settings }) {
     exec(`explorer "${folderPath}"`, () => {});
     return { ok: true };
   });
+
+  // Cloudflare Tunnel handlers
+  ipcMain.handle('cloudflared-check-installed', async () => {
+    return await cloudflaredTools.checkInstalled();
+  });
+
+  ipcMain.handle('cloudflared-install', async () => {
+    return await cloudflaredTools.installCloudflared((progress) => {
+      emit('cloudflared-install-progress', progress);
+    });
+  });
+
+  ipcMain.handle('cloudflared-start-tunnel', async (_, { port, protocol, noTlsVerify, host }) => {
+    return await cloudflaredTools.startTunnel({ port, protocol, noTlsVerify, host });
+  });
+
+  ipcMain.handle('cloudflared-stop-tunnel', async (_, port) => {
+    return await cloudflaredTools.stopTunnel(port);
+  });
+
+  ipcMain.handle('cloudflared-stop-all', async () => {
+    return await cloudflaredTools.stopAllTunnels();
+  });
+
+  ipcMain.handle('cloudflared-remove-tunnel', async (_, port) => {
+    return cloudflaredTools.removeTunnel(port);
+  });
+
+  ipcMain.handle('cloudflared-get-tunnels', () => {
+    return cloudflaredTools.getTunnels();
+  });
+
+  ipcMain.handle('cloudflared-get-logs', (_, port) => {
+    return cloudflaredTools.getLogs(port);
+  });
+
+  ipcMain.handle('cloudflared-get-open-ports', async () => {
+    return await killPortTools.getOpenPorts();
+  });
+
+  return { appRunner, cloudflaredTools };
 }
 
 function setAutoLaunch(enable) {

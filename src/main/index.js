@@ -7,6 +7,9 @@ const tray         = require('./tray');
 const { register } = require('./ipc');
 
 let mainWindow      = null;
+let appRunner       = null;
+let cloudflaredTools = null;
+let registeredAppShortcut = '';
 
 const settings = load();
 
@@ -62,6 +65,37 @@ objShell.ShellExecute "${exePath}", "", "", "runas", 1`;
 }
 
 // ─── Window ───────────────────────────────────────────────────────────────────
+function showMainWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    createWindow();
+    return;
+  }
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+function registerAppShortcut(accelerator = settings.appShortcut) {
+  const nextShortcut = String(accelerator || '').trim();
+  if (nextShortcut === registeredAppShortcut) return { ok: true, shortcut: nextShortcut };
+
+  if (!nextShortcut) {
+    if (registeredAppShortcut) globalShortcut.unregister(registeredAppShortcut);
+    registeredAppShortcut = '';
+    return { ok: true, shortcut: '' };
+  }
+
+  // Register first so a conflicting new shortcut does not break the old one.
+  const registered = globalShortcut.register(nextShortcut, showMainWindow);
+  if (!registered) {
+    return { ok: false, shortcut: nextShortcut, error: `Không đăng ký được phím tắt ${nextShortcut}` };
+  }
+
+  if (registeredAppShortcut) globalShortcut.unregister(registeredAppShortcut);
+  registeredAppShortcut = nextShortcut;
+  return { ok: true, shortcut: nextShortcut };
+}
+
 function createWindow() {
   const bounds = settings.windowBounds || { width: 1100, height: 720 };
 
@@ -118,7 +152,15 @@ function createWindow() {
 }
 
 // ─── App lifecycle ────────────────────────────────────────────────────────────
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => showMainWindow());
+}
+
 app.whenReady().then(() => {
+  if (!gotSingleInstanceLock) return;
   const hasAdmin = isAdmin();
 
   // Kiểm tra admin - nếu không có thì chỉ báo nhẹ, không chặn app
@@ -150,14 +192,28 @@ app.whenReady().then(() => {
     }
   );
 
-  register({ ipcMain, app, shell, settings });
+  ({ appRunner, cloudflaredTools } = register({
+    ipcMain,
+    app,
+    shell,
+    settings,
+    emit(channel, payload) {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send(channel, payload);
+      }
+    },
+    registerAppShortcut
+  }));
 
+  registerAppShortcut(settings.appShortcut);
   globalShortcut.register('F12', () => mainWindow && mainWindow.webContents.toggleDevTools());
 });
 
 app.on('window-all-closed', (e) => e.preventDefault());
 
 app.on('before-quit', () => {
+  appRunner?.cleanupAllSync();
+  cloudflaredTools?.cleanupAllSync();
   globalShortcut.unregisterAll();
 });
 

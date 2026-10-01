@@ -33,8 +33,11 @@ function init({ switchView, loadSettings }) {
     { label: 'Chuyển sang Settings', icon: ICON.view, action: () => { switchView('settings'); loadSettings(); } },
     { label: 'Chuyển sang Prompt', icon: ICON.view, action: () => switchView('prompts') },
     { label: 'Chuyển sang Link', icon: ICON.view, action: () => switchView('links') },
+    { label: 'Mở App Runner', icon: ICON.view, action: () => switchView('appRunner') },
     { label: 'Mở Quản lý mạng', icon: ICON.view, action: () => switchView('network') },
     { label: 'Mở Reset', icon: ICON.view, action: () => switchView('idmReset') },
+    { label: 'Mở Kill Port', icon: ICON.view, action: () => switchView('killport') },
+    { label: 'Mở Cloudflare Tunnel (Chia sẻ cổng)', icon: ICON.view, action: () => switchView('cloudflared') },
     { label: 'Hẹn giờ tắt máy', icon: ICON.view, action: () => switchView('shutdown') },
     { label: 'Bật/Tắt Dark Mode', icon: ICON.theme, action: () => $('theme-toggle').click() }
   ];

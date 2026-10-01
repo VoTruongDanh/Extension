@@ -1,0 +1,216 @@
+<div id="view-cloudflared" class="view" style="display: none;">
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <h1>Cloudflare Tunnel</h1>
+        <span class="badge badge-secondary" id="cloudflared-binary-badge">
+          <span class="status-dot stopped" id="cloudflared-binary-dot"></span>
+          <span id="cloudflared-binary-text">Đang kiểm tra...</span>
+        </span>
+      </div>
+      <p class="subtitle">Mở cổng trên máy tính ra Internet an toàn và chia sẻ trang tức thì qua Cloudflare</p>
+    </div>
+    <div class="header-right">
+      <button id="cloudflared-install-btn" class="btn btn-warning" style="display: none;" title="Tự động tải file chạy cloudflared">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+        Tải Cloudflared
+      </button>
+      <button id="cloudflared-refresh-btn" class="btn btn-secondary" title="Làm mới trạng thái">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+        </svg>
+        Làm mới
+      </button>
+    </div>
+  </header>
+
+  <!-- Download Progress Bar (nếu đang tải binary) -->
+  <div id="cloudflared-download-progress-container" class="cf-download-card" style="display: none;">
+    <div class="cf-download-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="spinner-inline"></span>
+        <strong id="cloudflared-download-title">Đang tải Cloudflared từ máy chủ Cloudflare...</strong>
+      </div>
+      <span id="cloudflared-download-percent">0%</span>
+    </div>
+    <div class="progress" style="margin-top: 8px;">
+      <div id="cloudflared-download-bar" class="progress-bar" style="width: 0%;"></div>
+    </div>
+    <div class="cf-download-sub" id="cloudflared-download-sub">Chuẩn bị kết nối...</div>
+  </div>
+
+  <!-- Setup Tunnel Card -->
+  <div class="cf-card">
+    <div class="cf-card-header">
+      <div class="cf-card-title-group">
+        <div class="cf-icon-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Mở Cổng Chia Sẻ Nhanh</h3>
+          <p>Tạo một địa chỉ HTTPS công khai thông qua Cloudflare Tunnel cho dịch vụ đang chạy trên máy</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cf-card-body">
+      <div class="cf-form-grid">
+        <!-- Input Row -->
+        <div class="cf-input-row">
+          <div class="cf-protocol-select-wrap">
+            <label class="cf-field-label">Giao thức</label>
+            <select id="cf-protocol-select" class="shutdown-select cf-protocol-select">
+              <option value="http">http://</option>
+              <option value="https">https://</option>
+            </select>
+          </div>
+
+          <div class="cf-host-wrap">
+            <label class="cf-field-label">Host</label>
+            <input type="text" id="cf-host-input" class="cf-input text-mono" value="localhost" placeholder="localhost" />
+          </div>
+
+          <div class="cf-port-wrap">
+            <label class="cf-field-label">Cổng (Port) *</label>
+            <input type="number" id="cf-port-input" class="cf-input text-mono" value="5173" min="1" max="65535" placeholder="5173" />
+          </div>
+
+          <div class="cf-action-wrap">
+            <label class="cf-field-label">&nbsp;</label>
+            <button id="cf-start-btn" class="btn btn-primary cf-btn-start">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+              </svg>
+              <span>Mở Cổng</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Presets & Open Ports Quick Pick -->
+        <div class="cf-presets-row">
+          <span class="cf-presets-label">Gợi ý cổng:</span>
+          <div class="cf-preset-chips" id="cf-preset-chips">
+            <button type="button" class="cf-chip" data-port="5173">5173 (Vite)</button>
+            <button type="button" class="cf-chip" data-port="3000">3000 (React / Next)</button>
+            <button type="button" class="cf-chip" data-port="8080">8080 (Web)</button>
+            <button type="button" class="cf-chip" data-port="8000">8000 (Python)</button>
+            <button type="button" class="cf-chip" data-port="4000">4000 (Backend)</button>
+            <button type="button" class="cf-chip" data-port="5000">5000 (Flask)</button>
+          </div>
+
+          <button type="button" class="btn btn-secondary cf-btn-scan" id="cf-scan-ports-btn" title="Quét các cổng đang chạy trên máy tính">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <span>Cổng đang chạy trên máy</span>
+          </button>
+        </div>
+
+        <!-- Active Ports Dropdown Drawer (hiện khi bấm quét cổng) -->
+        <div id="cf-open-ports-drawer" class="cf-open-ports-drawer" style="display: none;">
+          <div class="cf-drawer-header">
+            <strong>Chọn nhanh từ cổng đang LISTENING trên máy:</strong>
+            <button type="button" class="btn-icon" id="cf-drawer-close" aria-label="Đóng">&times;</button>
+          </div>
+          <div class="cf-open-ports-list" id="cf-open-ports-list">
+            <!-- Render danh sách ports từ netstat -->
+          </div>
+        </div>
+
+        <!-- Advanced Options Toggle -->
+        <div class="cf-advanced-row">
+          <label class="cf-checkbox-label">
+            <input type="checkbox" id="cf-no-tls-verify">
+            <span>Bỏ qua kiểm tra chứng chỉ SSL (--no-tls-verify) khi kết nối localhost https</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Tunnels Section -->
+  <div class="cf-section-header">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <h2>Danh Sách Tunnel Đang Hoạt Động</h2>
+      <span class="badge badge-secondary" id="cf-active-count">0 tunnel</span>
+    </div>
+    <div class="cf-section-actions">
+      <button id="cf-stop-all-btn" class="btn btn-secondary btn-sm" style="display: none;" title="Dừng toàn bộ tunnels">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>
+        </svg>
+        Dừng tất cả
+      </button>
+    </div>
+  </div>
+
+  <!-- Tunnels Grid List -->
+  <div class="cf-tunnels-grid" id="cf-tunnels-list">
+    <!-- Render danh sách các tunnels -->
+  </div>
+
+  <!-- Realtime Logs Card -->
+  <div class="cf-card cf-log-card" id="cf-log-section">
+    <div class="cf-card-header cf-log-header">
+      <div class="cf-log-title-group">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
+        </svg>
+        <h3>Nhật Ký Thời Gian Thực (Live Logs)</h3>
+        <span class="cf-current-log-port" id="cf-log-port-label">Tất cả tunnels</span>
+      </div>
+
+      <div class="cf-log-controls">
+        <button class="btn btn-secondary btn-sm" id="cf-log-autoscroll-btn" title="Bật/Tắt tự cuộn">
+          Tự cuộn: BẬT
+        </button>
+        <button class="btn btn-secondary btn-sm" id="cf-log-copy-btn" title="Sao chép toàn bộ nhật ký">
+          Sao chép
+        </button>
+        <button class="btn btn-secondary btn-sm" id="cf-log-clear-btn" title="Xóa nhật ký">
+          Xóa
+        </button>
+      </div>
+    </div>
+
+    <div class="cf-terminal-body" id="cf-terminal-output">
+      <div class="cf-log-placeholder">Chưa có nhật ký nào. Hãy nhấn "Mở Cổng" để bắt đầu chia sẻ.</div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal Dialog -->
+  <div class="library-modal-overlay" id="cf-qr-modal" role="dialog" aria-modal="true" style="display: none;">
+    <div class="library-modal cf-qr-modal-dialog">
+      <div class="library-modal-head">
+        <div>
+          <h2>Mã QR Truy Cập Nhanh</h2>
+          <p>Quét mã bằng camera điện thoại để mở trực tiếp trang web</p>
+        </div>
+        <button class="btn-icon btn-secondary" type="button" id="cf-qr-modal-close" aria-label="Đóng">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="cf-qr-modal-content">
+        <div class="cf-qr-canvas-wrapper">
+          <canvas id="cf-qr-canvas" width="220" height="220"></canvas>
+        </div>
+        <div class="cf-qr-url-box">
+          <span class="text-mono" id="cf-qr-url-text">https://...trycloudflare.com</span>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: center; width: 100%;">
+          <button class="btn btn-secondary" id="cf-qr-copy-btn">Sao chép Link</button>
+          <button class="btn btn-primary" id="cf-qr-open-btn">Mở trong Trình duyệt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

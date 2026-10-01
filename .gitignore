@@ -62,3 +62,6 @@ settings.json
 Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
+
+.agent/
+agent/

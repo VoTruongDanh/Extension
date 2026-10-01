@@ -1,0 +1,125 @@
+<div id="view-appRunner" style="display:none">
+  <header class="header app-runner-header">
+    <div>
+      <h1>App Runner</h1>
+      <p class="subtitle">Thêm ứng dụng, nhận lệnh tự động và chạy ngay trong một nơi.</p>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-success" id="app-runner-running-count">0 đang chạy</span>
+      <span class="badge badge-secondary" id="app-runner-count">0 ứng dụng</span>
+      <button class="btn btn-secondary" id="app-runner-add-file" type="button">+ Thêm file</button>
+      <button class="btn btn-primary" id="app-runner-add-folder" type="button">+ Thêm thư mục</button>
+    </div>
+  </header>
+
+  <div class="app-runner-layout">
+    <section class="app-runner-list-panel" aria-label="Danh sách ứng dụng">
+      <div class="app-runner-toolbar">
+        <label class="app-runner-search-wrap">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.817-4.817A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          <input id="app-runner-search" type="search" placeholder="Tìm ứng dụng..." aria-label="Tìm ứng dụng">
+        </label>
+        <button class="btn-icon btn-secondary" id="app-runner-refresh" type="button" title="Làm mới" aria-label="Làm mới">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+      <div id="app-runner-list" class="app-runner-list"></div>
+    </section>
+
+    <section class="app-runner-console-panel" aria-label="Chi tiết ứng dụng">
+      <div id="app-runner-detail-empty" class="app-runner-detail-empty">
+        <div class="app-runner-empty-icon">&gt;_</div>
+        <h2>Chọn một ứng dụng</h2>
+        <p>Xem lệnh, trạng thái và log chạy trực tiếp tại đây.</p>
+      </div>
+      <div id="app-runner-detail" class="app-runner-detail" style="display:none">
+        <div class="app-runner-detail-head">
+          <div class="app-runner-detail-title">
+            <div class="app-runner-runtime-icon" id="app-runner-detail-icon">&gt;_</div>
+            <div>
+              <div class="app-runner-title-row">
+                <h2 id="app-runner-detail-name">Ứng dụng</h2>
+                <span id="app-runner-detail-status" class="app-runner-state stopped"><span class="status-dot stopped"></span><span>Dừng</span></span>
+              </div>
+              <p id="app-runner-detail-target" class="app-runner-detail-target"></p>
+            </div>
+          </div>
+          <div class="app-runner-detail-actions">
+            <button class="btn btn-primary" id="app-runner-detail-run" type="button">Chạy</button>
+            <button class="btn btn-secondary" id="app-runner-detail-restart" type="button">Khởi động lại</button>
+            <button class="btn-icon btn-secondary" id="app-runner-detail-edit" type="button" title="Chỉnh sửa" aria-label="Chỉnh sửa">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="app-runner-metrics">
+          <div><span>Runtime</span><strong id="app-runner-detail-runtime">--</strong></div>
+          <div><span>PID</span><strong id="app-runner-detail-pid">--</strong></div>
+          <div><span>Thời gian</span><strong id="app-runner-detail-uptime">00:00:00</strong></div>
+        </div>
+
+        <div class="app-runner-command-box">
+          <span>Lệnh khởi chạy</span>
+          <code id="app-runner-detail-command"></code>
+        </div>
+
+        <div class="app-runner-console-head">
+          <div>
+            <strong>Console</strong>
+            <span>stdout / stderr</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="app-runner-clear-log" type="button">Xóa log</button>
+        </div>
+        <div id="app-runner-console" class="app-runner-console" role="log" aria-live="polite"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="library-modal-overlay" id="app-runner-modal" role="dialog" aria-modal="true" aria-labelledby="app-runner-modal-title" style="display:none">
+    <div class="library-modal app-runner-modal-card">
+      <div class="library-modal-head">
+        <div>
+          <h2 id="app-runner-modal-title">Thêm ứng dụng</h2>
+          <p>Đã nhận diện runtime và lệnh; kiểm tra hoặc chỉnh sửa trước khi lưu.</p>
+        </div>
+        <button class="btn-icon btn-secondary" type="button" id="app-runner-modal-close" aria-label="Đóng">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+      <form id="app-runner-form" class="library-form">
+        <input id="app-runner-id" type="hidden">
+        <input id="app-runner-target" type="hidden">
+        <div class="app-runner-form-grid">
+          <label class="library-field">
+            <span class="library-label">Tên hiển thị</span>
+            <input id="app-runner-name" class="library-input" maxlength="120" required>
+          </label>
+          <label class="library-field">
+            <span class="library-label">Runtime</span>
+            <input id="app-runner-runtime" class="library-input" maxlength="60" required>
+          </label>
+        </div>
+        <label class="library-field">
+          <span class="library-label">Thư mục làm việc</span>
+          <input id="app-runner-cwd" class="library-input app-runner-mono-input" required>
+        </label>
+        <label class="library-field">
+          <span class="library-label">Lệnh khởi chạy</span>
+          <textarea id="app-runner-command" class="library-textarea app-runner-command-input" maxlength="2000" required></textarea>
+          <small class="app-runner-command-hint">Ví dụ: npm run dev · go run . · cargo run · dotnet run</small>
+        </label>
+        <p id="app-runner-detection-note" class="library-modal-note app-runner-detection-note" style="display:none"></p>
+        <label class="toggle-row library-toggle-row">
+          <span class="toggle-label"><strong>Ghim lên Dashboard</strong><small>Chạy nhanh mà không cần mở tab này.</small></span>
+          <div class="switch"><input type="checkbox" id="app-runner-pinned"><span class="switch-track"><span class="switch-thumb"></span></span></div>
+        </label>
+        <p class="library-modal-note">Lệnh sẽ chạy trên máy với quyền của ứng dụng. Chỉ lưu lệnh từ dự án bạn tin cậy.</p>
+        <div class="library-form-actions library-modal-actions">
+          <button class="btn btn-secondary" type="button" id="app-runner-modal-cancel">Hủy</button>
+          <button class="btn btn-primary" type="submit" id="app-runner-save">Lưu ứng dụng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

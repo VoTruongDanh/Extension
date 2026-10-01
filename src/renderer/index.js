@@ -12,13 +12,16 @@ const anydeskView = require('./views/tools/anydesk-reset');
 const promptsView = require('./views/tools/prompts');
 const linksView = require('./views/tools/links');
 const claudecodeView = require('./views/tools/claudecode');
+const cloudflaredView = require('./views/tools/cloudflared');
 const schedulerView = require('./views/scheduler');
+const appRunnerView = require('./views/tools/app-runner');
 const commandPalette = require('./components/commandPalette');
 const { initThemeToggle } = require('./bootstrap/theme');
 const { createNavigator } = require('./bootstrap/navigation');
 
 const views = {
   dashboard: ui.$('view-dashboard'),
+  appRunner: ui.$('view-appRunner'),
   claudecode: ui.$('view-claudecode'),
   settings: ui.$('view-settings'),
   shutdown: ui.$('view-shutdown'),
@@ -26,6 +29,7 @@ const views = {
   network: ui.$('view-network'),
   hardware: ui.$('view-hardware'),
   killport: ui.$('view-killport'),
+  cloudflared: ui.$('view-cloudflared'),
   idmReset: ui.$('view-idm-reset'),
   prompts: ui.$('view-prompts'),
   links: ui.$('view-links'),
@@ -33,9 +37,11 @@ const views = {
 
 const viewLoaders = {
   settings: () => settingsView.load(),
+  appRunner: () => appRunnerView.load(),
   network: () => networkView.load(),
   hardware: () => hardwareView.load(),
   killport: () => killportView.load(),
+  cloudflared: () => cloudflaredView.load(),
   prompts: () => promptsView.load(),
   links: () => linksView.load(),
   scheduler: () => schedulerView.render(),
@@ -44,6 +50,7 @@ const viewLoaders = {
 
 const modules = [
   dashboard,
+  appRunnerView,
   settingsView,
   shutdownView,
   schedulerView,
@@ -55,10 +62,12 @@ const modules = [
   promptsView,
   linksView,
   claudecodeView,
+  cloudflaredView,
 ];
 
 const navMap = {
   'nav-dashboard': 'dashboard',
+  'nav-appRunner': 'appRunner',
   'nav-claudecode': 'claudecode',
   'nav-settings': 'settings',
   'nav-shutdown': 'shutdown',
@@ -66,6 +75,7 @@ const navMap = {
   'nav-network': 'network',
   'nav-hardware': 'hardware',
   'nav-killport': 'killport',
+  'nav-cloudflared': 'cloudflared',
   'nav-idm-reset': 'idmReset',
   'nav-prompts': 'prompts',
   'nav-links': 'links',
@@ -105,6 +115,14 @@ function initShell() {
       const loadView = viewLoaders[name];
       if (loadView) loadView();
     },
+  });
+
+  dashboard.configure({
+    switchView,
+    focusApp(id) {
+      switchView('appRunner');
+      appRunnerView.focus(id);
+    }
   });
 
   bindNavigation(navMap);

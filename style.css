@@ -6,4 +6,6 @@
 @import "./src/renderer/styles/06-library-workspaces.css";
 @import "./src/renderer/styles/07-tools-hardware.css";
 @import "./src/renderer/styles/08-tools-claudecode.css";
+@import "./src/renderer/styles/09-tools-app-runner.css";
+@import "./src/renderer/styles/10-tools-cloudflared.css";
 

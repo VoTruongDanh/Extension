@@ -23,7 +23,8 @@ function getCurrentState() {
   return {
     autoLaunch: ui.$('setting-auto-launch').checked,
     startMinimized: ui.$('setting-start-minimized').checked,
-    minimizeToTray: ui.$('setting-minimize-tray').checked
+    minimizeToTray: ui.$('setting-minimize-tray').checked,
+    appShortcut: ui.$('setting-app-shortcut').value.trim()
   };
 }
 
@@ -32,11 +33,29 @@ function isDirty() {
   return JSON.stringify(current) !== JSON.stringify(lastSavedState);
 }
 
+function captureShortcut(event) {
+  if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
+  event.preventDefault();
+
+  const parts = [];
+  if (event.ctrlKey) parts.push('Ctrl');
+  if (event.altKey) parts.push('Alt');
+  if (event.shiftKey) parts.push('Shift');
+  if (event.metaKey) parts.push('Super');
+
+  const key = event.key.length === 1 ? event.key.toUpperCase() : event.key;
+  if (['Control', 'Alt', 'Shift', 'Meta', 'Unidentified'].includes(key)) return;
+  parts.push(key === ' ' ? 'Space' : key);
+  event.target.value = parts.join('+');
+  event.target.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 function init() {
   ipcRenderer.on('settings-data', (_, s) => {
     ui.$('setting-auto-launch').checked = !!s.autoLaunch;
     ui.$('setting-start-minimized').checked = !!s.startMinimized;
     ui.$('setting-minimize-tray').checked = s.minimizeToTray !== false;
+    ui.$('setting-app-shortcut').value = s.appShortcut || 'Ctrl+Alt+E';
     ui.$('settings-path-text').textContent = s._path || '...';
     lastSavedState = getCurrentState();
     markClean();
@@ -48,6 +67,10 @@ function init() {
     ui.showToast('Đã lưu cài đặt', 'success');
   });
 
+  ipcRenderer.on('settings-save-error', (_, message) => {
+    ui.showToast(message || 'Không lưu được phím tắt', 'error');
+  });
+
   ipcRenderer.on('app-version', (_, v) => {
     ui.$('app-version-text').textContent = `v${v}`;
   });
@@ -55,11 +78,16 @@ function init() {
   [
     'setting-auto-launch',
     'setting-start-minimized',
-    'setting-minimize-tray'
+    'setting-minimize-tray',
+    'setting-app-shortcut'
   ].forEach((id) => {
     const el = ui.$(id);
-    if (el) el.addEventListener('change', () => (isDirty() ? markDirty() : markClean()));
+    if (!el) return;
+    el.addEventListener('change', () => (isDirty() ? markDirty() : markClean()));
   });
+
+  const shortcutInput = ui.$('setting-app-shortcut');
+  shortcutInput?.addEventListener('keydown', captureShortcut);
 
   ui.$('save-settings-btn').addEventListener('click', () => {
     const current = getCurrentState();
